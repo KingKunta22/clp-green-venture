@@ -11,3 +11,15 @@ html {
 section {
   scroll-margin-top: 80px; /* Adjust based on your navbar height */
 }
+
+.navbar-scroll {
+  background-color: white !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* OR use Tailwind classes in CSS */
+@tailwind utilities;
+
+.scrolled-nav {
+  @apply bg-white shadow-md backdrop-blur-sm;
+}

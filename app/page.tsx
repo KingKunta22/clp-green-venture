@@ -1,23 +1,18 @@
 import Navbar from "./components/Navbar"
 import Hero from "./components/Hero"
+import About from "./about/page"
 
 export default function Home() {
   return (
     <div className="min-h-screen">
       <Navbar />
       
-      {/* Add ID to each section */}
       <section id="home">
         <Hero />
       </section>
       
-      <section id="about" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">About CLP Agarwood</h2>
-          <p className="text-gray-600 text-center max-w-2xl mx-auto">
-            Your content about the company goes here...
-          </p>
-        </div>
+      <section id="about">
+        <About />
       </section>
       
       <section id="gallery" className="py-20 bg-gray-50">
