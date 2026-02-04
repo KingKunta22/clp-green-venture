@@ -70,6 +70,17 @@ export default function Navbar() {
             </a>
             
             <a 
+              href="#seminars" 
+              className={`px-2 py-1 uppercase text-sm font-bold transition-colors ${
+                activeSection === 'gallery' 
+                  ? 'text-green-700 border-b-2 border-green-700' 
+                  : 'text-gray-700 hover:text-green-600'
+              }`}
+            >
+              Seminars
+            </a>
+
+            <a 
               href="#gallery" 
               className={`px-2 py-1 uppercase text-sm font-bold transition-colors ${
                 activeSection === 'gallery' 
