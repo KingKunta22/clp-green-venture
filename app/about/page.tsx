@@ -48,10 +48,10 @@ export default function About() {
             visibleSections.has(0) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
             <span className="text-green-500 font-mono tracking-widest uppercase text-sm block mb-2">Sustainable Agriculture</span>
-            <h2 className="text-5xl font-extrabold mt-8 mb-16 leading-tight">
+            <h2 className="text-5xl font-extrabold mt-4 leading-tight">
               About Us
             </h2>
-            <p className="text-zinc-400 text-lg leading-relaxed">
+            <p className="text-zinc-400 mt-12 text-lg leading-relaxed">
               CLP Green Venture is a leading force in sustainable agarwood cultivation and responsible plant management in the Philippines. Under the guidance of <span className="text-white font-semibold">Charlie Patigue</span>, we've grown from a direct selling foundation into a trusted authority in the agarwood industry.
             </p>
             
@@ -74,7 +74,7 @@ export default function About() {
             <h3 className="text-green-500 font-bold uppercase tracking-tighter text-xs mb-4">The man behind the growing business</h3>
             
             {/* ABOUT SIR CHARLIE - RESIZED IMAGE */}
-            <div className="relative w-full h-[400px] mx-auto overflow-hidden rounded-lg">
+            <div className="relative w-full h-[400px] mx-auto overflow-hidden rounded-md">
               <Image
                 src={'/images/sircharlie.jpg'}
                 alt={'Charlie Patigue'}
