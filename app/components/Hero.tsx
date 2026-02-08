@@ -82,13 +82,13 @@ export default function Hero() {
         <h2 className={`text-7xl font-semibold mb-3 uppercase tracking-wider text-shadow-lg transition-all duration-700 delay-200 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}>
-          <span className="text-[#efb10c] transition-colors duration-500">C</span>LP Green Venture
+          <span className="text-[#efb10c] transition-colors duration-500">C</span>LP GREEN VENTURE INC.
         </h2>
         
         <h3 className={`max-w-4xl text-md mt-4 mb-8 leading-tight transition-all duration-700 delay-300 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}>
-          At CLP Green Venture, we are committed to advancing sustainable and responsible agriculture through the cultivation and management of agarwood. Our mission is to provide guidance, expertise, and high-quality seedlings to growers, enthusiasts, and investors, ensuring that every tree reaches its full potential.<br></br><br></br>
+          At CLP GREEN VENTURE INC., we are committed to advancing sustainable and responsible agriculture through the cultivation and management of agarwood. Our mission is to provide guidance, expertise, and high-quality seedlings to growers, enthusiasts, and investors, ensuring that every tree reaches its full potential.<br></br><br></br>
           We combine scientific horticulture practices with practical business insight, helping our clients grow not just plants, but long-term value. From seedling care and nursery management to soil testing, sustainable planting, and health standards, CLP is your trusted partner in every step of the agarwood journey.
         </h3>
         

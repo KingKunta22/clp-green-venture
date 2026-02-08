@@ -1,6 +1,7 @@
 import Navbar from "./components/Navbar"
 import Hero from "./components/Hero"
 import About from "./about/page"
+import Products from "./products/page"
 import Seminars from "./seminars/page"
 import Gallery from "./gallery/page"
 
@@ -17,6 +18,10 @@ export default function Home() {
         <About />
       </section>
       
+      <section id="products">
+        <Products />
+      </section>
+
       <section id="seminars">
         <Seminars />
       </section>
