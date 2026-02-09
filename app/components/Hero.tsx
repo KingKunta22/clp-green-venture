@@ -78,6 +78,7 @@ export default function Hero() {
         }`}>
           Welcome to
         </h1>
+        {/* WQRQWRQRQWRQWR */}
         
         <h2 className={`text-7xl font-semibold mb-3 uppercase tracking-wider text-shadow-lg transition-all duration-700 delay-200 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
