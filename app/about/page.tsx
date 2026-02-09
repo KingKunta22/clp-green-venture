@@ -94,7 +94,7 @@ export default function About() {
         
         {/* 1. ABOUT CLP GREEN VENTURE */}
         <div 
-          ref={el => sectionRefs.current[0] = el}
+          ref={(el) => { sectionRefs.current[0] = el }}
           data-section-index="0"
           className="grid md:grid-cols-2 gap-12 items-start mb-24"
         >
@@ -151,7 +151,7 @@ export default function About() {
 
         {/* 2. PARTNERSHIP BENEFITS */}
         <div 
-          ref={el => sectionRefs.current[1] = el}
+          ref={(el) => { sectionRefs.current[1] = el }}
           data-section-index="1"
           className={`mb-24 transition-all duration-1000 ease-out transform ${
             visibleSections.has(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
@@ -169,7 +169,7 @@ export default function About() {
               </div>
               <h4 className="text-white font-bold text-xl mb-3">Expert Training</h4>
               <p className="text-zinc-400 text-sm leading-relaxed">
-                Led by <span className="text-green-500 font-medium">Juvelyn Quirog</span>, our training covers inoculation techniques, market valuation, and sustainable agarwood management. We offer both online and in-person sessions to suit different learning preferences.
+                Featuring expert guidance from <span className="text-green-500 font-medium">Juvelyn Quirog</span>, our training covers inoculation techniques, market valuation, and sustainable agarwood management. We offer both online and in-person sessions to suit different learning preferences.
               </p>
             </div>
 
@@ -197,7 +197,7 @@ export default function About() {
 
         {/* 3. CLP ACHIEVEMENTS */}
         <div 
-          ref={el => sectionRefs.current[2] = el}
+          ref={(el) => { sectionRefs.current[2] = el }}
           data-section-index="2"
           className={`mb-24 transition-all duration-1000 ease-out transform ${
             visibleSections.has(2) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
@@ -226,7 +226,7 @@ export default function About() {
 
         {/* 4. AWARDS & CERTIFICATIONS */}
         <div 
-          ref={el => sectionRefs.current[3] = el}
+          ref={(el) => { sectionRefs.current[3] = el }}
           data-section-index="3"
           className={`mb-24 transition-all duration-1000 ease-out transform ${
             visibleSections.has(3) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
@@ -332,7 +332,7 @@ export default function About() {
 
         {/* 5. CALL TO ACTION */}
         <div 
-          ref={el => sectionRefs.current[4] = el}
+          ref={(el) => { sectionRefs.current[4] = el }}
           data-section-index="4"
           className={`bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-[3rem] p-12 text-center transition-all duration-1000 ease-out transform ${
             visibleSections.has(4) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'

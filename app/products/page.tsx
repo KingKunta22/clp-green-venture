@@ -1,11 +1,38 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, Leaf, DollarSign, Calendar, TrendingUp, Shield, Package, Users, CheckCircle, Zap, Clock } from 'lucide-react'
 
 export default function Products() {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const carouselRef = useRef<HTMLDivElement>(null)
+  const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set())
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const index = parseInt(entry.target.getAttribute('data-section-index') || '0')
+          setVisibleSections(prev => {
+            const newSet = new Set(prev)
+            newSet.add(index)
+            return newSet
+          })
+        }
+      })
+    }, observerOptions)
+
+    sectionRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref)
+    })
+
+    return () => observer.disconnect()
+  }, [])
 
   const agarwoodSlides = [
     {
@@ -123,7 +150,13 @@ export default function Products() {
       <div className="max-w-6xl mx-auto">
         
         {/* HEADER */}
-        <div className="text-center mb-16">
+        <div 
+          ref={(el) => { sectionRefs.current[0] = el }}
+          data-section-index="0"
+          className={`text-center mb-16 transition-all duration-1000 ease-out transform ${
+            visibleSections.has(0) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
           <span className="text-green-500 font-mono tracking-widest uppercase text-sm block mb-4">Premium Products</span>
           <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
             Discover <span className="text-green-600">Agarwood</span> Wealth
@@ -134,7 +167,13 @@ export default function Products() {
         </div>
 
         {/* AGARWOOD EDUCATION CAROUSEL */}
-        <div className="mb-24">
+        <div 
+          ref={(el) => { sectionRefs.current[1] = el }}
+          data-section-index="1"
+          className={`mb-24 transition-all duration-1000 ease-out transform ${
+            visibleSections.has(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
           <div className="relative">
             {/* PROGRESS BAR */}
             <div className="mb-8">
@@ -164,12 +203,12 @@ export default function Products() {
                         : 'opacity-0 translate-x-full'
                     }`}
                   >
-                    <div className={`h-full bg-gradient-to-br ${slide.color} p-8 md:p-12 rounded-3xl`}>
+                    <div className={`h-full bg-gradient-to-br ${slide.color} p-8 md:p-12 rounded-3xl transition-all duration-500 hover:shadow-xl`}>
                       <div className="flex flex-col lg:flex-row items-center h-full gap-8">
                         {/* ICON SECTION */}
                         <div className="flex-shrink-0">
-                          <div className="w-24 h-24 md:w-32 md:h-32 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                            <div className="text-white">
+                          <div className="w-24 h-24 md:w-32 md:h-32 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center transition-all duration-500 hover:bg-white/20 hover:scale-110">
+                            <div className="text-white transition-transform duration-500 hover:scale-110">
                               {slide.icon}
                             </div>
                           </div>
@@ -182,15 +221,15 @@ export default function Products() {
                             <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-4">{slide.title}</h2>
                           </div>
                           
-                          <p className="text-white/90 text-lg mb-6 leading-relaxed">{slide.content}</p>
+                          <p className="text-white/90 text-lg mb-6 leading-relaxed transition-all duration-300">{slide.content}</p>
                           
-                          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
+                          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 transition-all duration-300 hover:bg-white/15 hover:border-white/30">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                                <Clock className="w-4 h-4 text-white" />
+                              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-white/30">
+                                <Clock className="w-4 h-4 text-white transition-transform duration-300 hover:scale-110" />
                               </div>
                               <div>
-                                <p className="text-white font-bold text-lg">{slide.highlight}</p>
+                                <p className="text-white font-bold text-lg transition-colors duration-300">{slide.highlight}</p>
                               </div>
                             </div>
                           </div>
@@ -206,10 +245,10 @@ export default function Products() {
             <div className="flex items-center justify-center mt-8 gap-6">
               <button
                 onClick={prevSlide}
-                className="p-3 rounded-full bg-green-900/30 border border-green-800/30 hover:bg-green-800/40 transition-all duration-300 hover:scale-110"
+                className="p-3 rounded-full bg-green-900/30 border border-green-800/30 hover:bg-green-800/40 transition-all duration-300 hover:scale-110 active:scale-95"
                 aria-label="Previous slide"
               >
-                <ChevronLeft className="w-5 h-5 text-green-400" />
+                <ChevronLeft className="w-5 h-5 text-green-400 transition-transform duration-300" />
               </button>
               
               {/* SLIDE INDICATORS */}
@@ -218,7 +257,7 @@ export default function Products() {
                   <button
                     key={index}
                     onClick={() => goToSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    className={`w-3 h-3 rounded-full transition-all duration-300 hover:scale-125 ${
                       index === currentSlide 
                         ? 'bg-green-500 w-8' 
                         : 'bg-zinc-700 hover:bg-zinc-600'
@@ -230,16 +269,16 @@ export default function Products() {
               
               <button
                 onClick={nextSlide}
-                className="p-3 rounded-full bg-green-900/30 border border-green-800/30 hover:bg-green-800/40 transition-all duration-300 hover:scale-110"
+                className="p-3 rounded-full bg-green-900/30 border border-green-800/30 hover:bg-green-800/40 transition-all duration-300 hover:scale-110 active:scale-95"
                 aria-label="Next slide"
               >
-                <ChevronRight className="w-5 h-5 text-green-400" />
+                <ChevronRight className="w-5 h-5 text-green-400 transition-transform duration-300" />
               </button>
             </div>
 
             {/* QUICK TIP */}
             <div className="text-center mt-6">
-              <p className="text-zinc-500 text-sm">
+              <p className="text-zinc-500 text-sm transition-opacity duration-300">
                 Each tree can produce 1-3kg of resin worth ₱50,000-₱500,000
               </p>
             </div>
@@ -247,7 +286,13 @@ export default function Products() {
         </div>
 
         {/* OTHER PRODUCTS */}
-        <div className="mb-24">
+        <div 
+          ref={(el) => { sectionRefs.current[2] = el }}
+          data-section-index="2"
+          className={`mb-24 transition-all duration-1000 ease-out transform ${
+            visibleSections.has(2) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold mb-3">Other Available Products</h3>
             <p className="text-zinc-500 text-lg max-w-2xl mx-auto">Everything you need for successful agarwood cultivation</p>
@@ -257,30 +302,30 @@ export default function Products() {
             {otherProducts.map((product) => (
               <div 
                 key={product.id}
-                className="bg-zinc-900/30 border border-green-800/20 rounded-2xl p-6 hover:border-green-600/30 transition-all duration-300 hover:translate-y-[-5px] group"
+                className="bg-zinc-900/30 border border-green-800/20 rounded-2xl p-6 hover:border-green-600/30 transition-all duration-500 hover:translate-y-[-5px] group hover:shadow-xl"
               >
                 <div className="mb-6">
-                  <div className="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
-                    <Package className="w-6 h-6 text-green-500" />
+                  <div className="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 hover:bg-green-900/40 hover:scale-110">
+                    <Package className="w-6 h-6 text-green-500 transition-transform duration-300 hover:scale-110" />
                   </div>
-                  <h4 className="text-xl font-bold text-white mb-2">{product.name}</h4>
-                  <p className="text-zinc-400 text-sm">{product.description}</p>
+                  <h4 className="text-xl font-bold text-white mb-2 transition-colors duration-300 group-hover:text-green-400">{product.name}</h4>
+                  <p className="text-zinc-400 text-sm transition-opacity duration-300 group-hover:text-zinc-300">{product.description}</p>
                 </div>
                 
                 <div className="space-y-3 mb-6">
                   {product.features.map((feature, idx) => (
                     <div key={idx} className="flex items-center gap-3">
-                      <div className="w-5 h-5 bg-green-900/30 rounded-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-green-500 rounded-full" />
+                      <div className="w-5 h-5 bg-green-900/30 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-green-900/40">
+                        <div className="w-2 h-2 bg-green-500 rounded-full transition-transform duration-300 hover:scale-125" />
                       </div>
-                      <span className="text-white text-sm">{feature}</span>
+                      <span className="text-white text-sm transition-colors duration-300 group-hover:text-green-300">{feature}</span>
                     </div>
                   ))}
                 </div>
                 
-                <div className="border-t border-green-800/30 pt-4">
-                  <p className="text-green-400 font-bold text-lg mb-4">{product.price}</p>
-                  <button className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group-hover:shadow-lg group-hover:shadow-green-900/20">
+                <div className="border-t border-green-800/30 pt-4 transition-all duration-300 group-hover:border-green-600/30">
+                  <p className="text-green-400 font-bold text-lg mb-4 transition-transform duration-300 group-hover:scale-105">{product.price}</p>
+                  <button className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-900/20 hover:shadow-green-900/40">
                     Inquire Now
                   </button>
                 </div>
@@ -290,7 +335,13 @@ export default function Products() {
         </div>
 
         {/* CTA SECTION */}
-        <div className="bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-[3rem] p-8 md:p-12 text-center">
+        <div 
+          ref={(el) => { sectionRefs.current[3] = el }}
+          data-section-index="3"
+          className={`bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-[3rem] p-8 md:p-12 text-center transition-all duration-1000 ease-out transform ${
+            visibleSections.has(3) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
           <h3 className="text-3xl font-bold mb-6">Ready to Invest in Agarwood?</h3>
           <p className="max-w-2xl mx-auto text-zinc-400 mb-8 text-lg leading-relaxed">
             Start with as little as 10 trees. Get complete guidance from seedling to harvest. 
@@ -299,7 +350,7 @@ export default function Products() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="#contact"
-              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-900/20 hover:shadow-green-900/40"
+              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-900/20 hover:shadow-green-900/40 active:scale-95"
             >
               Get Free Consultation
             </a>
@@ -307,7 +358,7 @@ export default function Products() {
               href="https://zoom.us/j/your-zoom-id-here"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 border border-green-800/30 hover:border-green-600/50"
+              className="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 border border-green-800/30 hover:border-green-600/50 active:scale-95"
             >
               Join Product Demo via Zoom
             </a>

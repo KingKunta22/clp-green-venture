@@ -4,6 +4,7 @@ import About from "./about/page"
 import Products from "./products/page"
 import Seminars from "./seminars/page"
 import Gallery from "./gallery/page"
+import Orgstructure from "./orgstructure/page"
 import Footer from "./components/Footer"
 
 export default function Home() {
@@ -29,6 +30,10 @@ export default function Home() {
 
       <section id="gallery">
         <Gallery />
+      </section>
+
+      <section id="orgstructure">
+        <Orgstructure />
       </section>
       
       <section id="footer">

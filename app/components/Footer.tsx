@@ -36,17 +36,17 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="text-green-400 hover:text-green-300 transition-colors"
             >
-              CLP Green Ventures
+              Agarwood by CLP
             </a>
           </div>
           
-          {/* PHONE (N/A) */}
+          {/* PHONE */}
           <div className="text-center">
             <div className="w-12 h-12 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-800/30">
               <Phone className="w-6 h-6 text-green-500" />
             </div>
             <h3 className="text-lg font-bold mb-2">Phone</h3>
-            <p className="text-zinc-400">N/A</p>
+            <p className="text-green-400 hover:text-green-300 transition-colors">0916 512 0219</p>
           </div>
           
         </div>

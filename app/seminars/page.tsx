@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { X, Calendar, Clock, MapPin, User, CheckCircle, Mail, Phone, Users, ChevronRight } from 'lucide-react'
 
 export default function Seminars() {
@@ -15,6 +15,36 @@ export default function Seminars() {
     message: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set())
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
+
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const index = parseInt(entry.target.getAttribute('data-section-index') || '0')
+          setVisibleSections(prev => {
+            const newSet = new Set(prev)
+            newSet.add(index)
+            return newSet
+          })
+        }
+      })
+    }, observerOptions)
+
+    // Observe all sections
+    sectionRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref)
+    })
+
+    return () => observer.disconnect()
+  }, [])
 
   // Hide/show navbar when form is open
   useEffect(() => {
@@ -114,7 +144,13 @@ export default function Seminars() {
       <div className="max-w-6xl mx-auto">
         
         {/* HEADER */}
-        <div className="text-center mb-16">
+        <div 
+          ref={(el) => { sectionRefs.current[0] = el }}
+          data-section-index="0"
+          className={`text-center mb-16 transition-all duration-1000 ease-out transform ${
+            visibleSections.has(0) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
           <span className="text-green-500 font-mono tracking-widest uppercase text-sm block mb-4">Expert Training</span>
           <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
             CLP <span className="text-green-600">Agarwood</span> Seminars
@@ -125,7 +161,7 @@ export default function Seminars() {
           </p>
           
           {/* CONTACT INFO */}
-          <div className="bg-zinc-900/50 border border-green-800/30 rounded-2xl p-6 max-w-2xl mx-auto mb-12">
+          <div className="bg-zinc-900/50 border border-green-800/30 rounded-2xl p-6 max-w-2xl mx-auto mb-12 transition-all duration-1000 ease-out delay-300 transform opacity-0 translate-y-10 animate-fade-up">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <p className="text-green-400 text-sm mb-3">Contact Information</p>
@@ -152,11 +188,20 @@ export default function Seminars() {
         </div>
 
         {/* SEMINARS GRID */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {seminars.map((seminar) => (
+        <div 
+          ref={(el) => { sectionRefs.current[1] = el }}
+          data-section-index="1"
+          className={`grid md:grid-cols-3 gap-8 mb-16 transition-all duration-1000 ease-out transform ${
+            visibleSections.has(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
+          {seminars.map((seminar, index) => (
             <div 
               key={seminar.id}
-              className="bg-zinc-900/30 border border-green-800/20 rounded-2xl overflow-hidden hover:border-green-600/30 transition-all duration-300 hover:translate-y-[-5px] group"
+              className={`bg-zinc-900/30 border border-green-800/20 rounded-2xl overflow-hidden hover:border-green-600/30 transition-all duration-500 hover:translate-y-[-5px] group transform ${
+                visibleSections.has(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }`}
+              style={{ transitionDelay: `${index * 200}ms` }}
             >
               {/* SEMINAR HEADER */}
               <div className={`bg-gradient-to-r ${seminar.color} p-6`}>
@@ -202,7 +247,13 @@ export default function Seminars() {
         </div>
 
         {/* BECOME A PLANTER CTA */}
-        <div className="bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-[3rem] p-8 md:p-12 text-center mb-16">
+        <div 
+          ref={(el) => { sectionRefs.current[2] = el }}
+          data-section-index="2"
+          className={`bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-[3rem] p-8 md:p-12 text-center mb-16 transition-all duration-1000 ease-out transform ${
+            visibleSections.has(2) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
           <h3 className="text-3xl font-bold mb-6">Start Your Agarwood Journey Today</h3>
           <p className="max-w-2xl mx-auto text-zinc-400 mb-8 text-lg leading-relaxed">
             Sign up for our seminars and start your journey in sustainable agarwood farming. 
@@ -234,12 +285,12 @@ export default function Seminars() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             {/* BACKDROP */}
             <div 
-              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
               onClick={() => setShowForm(false)}
             />
             
             {/* MODAL */}
-            <div className="relative bg-[#0f130e] border border-green-800/30 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="relative bg-[#0f130e] border border-green-800/30 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-scale-in">
               {/* HEADER */}
               <div className="sticky top-0 bg-[#0f130e] border-b border-green-800/30 p-6 flex justify-between items-center">
                 <div>
@@ -248,7 +299,7 @@ export default function Seminars() {
                 </div>
                 <button
                   onClick={() => setShowForm(false)}
-                  className="p-2 hover:bg-zinc-800/50 rounded-full transition-colors"
+                  className="p-2 hover:bg-zinc-800/50 rounded-full transition-colors duration-300 hover:scale-110"
                 >
                   <X className="w-6 h-6 text-zinc-400" />
                 </button>
@@ -256,8 +307,8 @@ export default function Seminars() {
               
               {/* SUCCESS MESSAGE */}
               {isSubmitted ? (
-                <div className="p-8 text-center">
-                  <div className="w-20 h-20 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/30">
+                <div className="p-8 text-center animate-fade-in">
+                  <div className="w-20 h-20 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/30 animate-scale-in">
                     <CheckCircle className="w-10 h-10 text-green-500" />
                   </div>
                   <h4 className="text-2xl font-bold text-white mb-3">Registration Successful!</h4>
@@ -266,17 +317,17 @@ export default function Seminars() {
                   </p>
                   <button
                     onClick={() => setShowForm(false)}
-                    className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300"
+                    className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 hover:scale-105"
                   >
                     Close
                   </button>
                 </div>
               ) : (
                 /* REGISTRATION FORM */
-                <form onSubmit={handleSubmit} className="p-6">
+                <form onSubmit={handleSubmit} className="p-6 animate-fade-in">
                   <div className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div>
+                      <div className="animate-fade-up" style={{ animationDelay: '0.1s' }}>
                         <label className="block text-sm font-medium text-zinc-300 mb-2">
                           Full Name *
                         </label>
@@ -286,12 +337,12 @@ export default function Seminars() {
                           value={formData.name}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-white placeholder:text-zinc-500"
+                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white placeholder:text-zinc-500 hover:border-green-600/50"
                           placeholder="Enter your full name"
                         />
                       </div>
                       
-                      <div>
+                      <div className="animate-fade-up" style={{ animationDelay: '0.2s' }}>
                         <label className="block text-sm font-medium text-zinc-300 mb-2">
                           Email Address *
                         </label>
@@ -301,14 +352,14 @@ export default function Seminars() {
                           value={formData.email}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-white placeholder:text-zinc-500"
+                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white placeholder:text-zinc-500 hover:border-green-600/50"
                           placeholder="Enter your email"
                         />
                       </div>
                     </div>
                     
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div>
+                      <div className="animate-fade-up" style={{ animationDelay: '0.3s' }}>
                         <label className="block text-sm font-medium text-zinc-300 mb-2">
                           Phone Number *
                         </label>
@@ -318,12 +369,12 @@ export default function Seminars() {
                           value={formData.phone}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-white placeholder:text-zinc-500"
+                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white placeholder:text-zinc-500 hover:border-green-600/50"
                           placeholder="09165120219"
                         />
                       </div>
                       
-                      <div>
+                      <div className="animate-fade-up" style={{ animationDelay: '0.4s' }}>
                         <label className="block text-sm font-medium text-zinc-300 mb-2">
                           Number of Participants *
                         </label>
@@ -335,12 +386,12 @@ export default function Seminars() {
                           min="1"
                           max="10"
                           required
-                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-white"
+                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white hover:border-green-600/50"
                         />
                       </div>
                     </div>
                     
-                    <div>
+                    <div className="animate-fade-up" style={{ animationDelay: '0.5s' }}>
                       <label className="block text-sm font-medium text-zinc-300 mb-2">
                         Select Seminar *
                       </label>
@@ -349,7 +400,7 @@ export default function Seminars() {
                         value={formData.seminarType}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-white"
+                        className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white hover:border-green-600/50"
                       >
                         <option value="basic">Basic Agarwood Cultivation (Mon & Fri, 3-6PM)</option>
                         <option value="advanced">Advanced Inoculation Techniques (Tue & Sat, 3-6PM)</option>
@@ -357,7 +408,7 @@ export default function Seminars() {
                       </select>
                     </div>
                     
-                    <div>
+                    <div className="animate-fade-up" style={{ animationDelay: '0.6s' }}>
                       <label className="block text-sm font-medium text-zinc-300 mb-2">
                         Preferred Date
                       </label>
@@ -366,11 +417,11 @@ export default function Seminars() {
                         name="preferredDate"
                         value={formData.preferredDate}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-white"
+                        className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white hover:border-green-600/50"
                       />
                     </div>
                     
-                    <div>
+                    <div className="animate-fade-up" style={{ animationDelay: '0.7s' }}>
                       <label className="block text-sm font-medium text-zinc-300 mb-2">
                         Additional Message (Optional)
                       </label>
@@ -379,12 +430,12 @@ export default function Seminars() {
                         value={formData.message}
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-white resize-none placeholder:text-zinc-500"
+                        className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white resize-none placeholder:text-zinc-500 hover:border-green-600/50"
                         placeholder="Any specific questions or requirements..."
                       />
                     </div>
                     
-                    <div className="pt-4">
+                    <div className="pt-4 animate-fade-up" style={{ animationDelay: '0.8s' }}>
                       <button
                         type="submit"
                         className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-4 px-6 rounded-lg text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-900/20"
