@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { X, Maximize2, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react'
+import { X, Maximize2, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Upload, Plus } from 'lucide-react'
 
 export default function Gallery() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set())
   const [showAllImages, setShowAllImages] = useState(false)
+  const [showUploadModal, setShowUploadModal] = useState(false)
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
 
   // Intersection Observer for scroll animations
@@ -39,58 +40,63 @@ export default function Gallery() {
     return () => observer.disconnect()
   }, [])
 
-  // Gallery images - updated to gallery1 to gallery25 with varied categories
-  const galleryImages = Array.from({ length: 25 }, (_, i) => {
-    const categories = ['plantation', 'harvest', 'processing', 'products', 'quality', 'training', 'community']
-    const category = categories[i % categories.length]
-    
-    const altTexts = {
-      plantation: [
-        'Agarwood Plantation Landscape', 'Young Agarwood Saplings', 'Mature Agarwood Trees',
-        'Sustainable Farming Practice', 'Plantation Irrigation System', 'Organic Fertilizer Application'
-      ],
-      harvest: [
-        'Agarwood Harvesting Process', 'Selective Tree Harvesting', 'Fresh Agarwood Collection',
-        'Sustainable Harvest Methods', 'Harvest Quality Control', 'Field Processing'
-      ],
-      processing: [
-        'Agarwood Processing Facility', 'Resin Extraction Process', 'Quality Grading System',
-        'Traditional Processing Methods', 'Modern Extraction Equipment', 'Product Sorting'
-      ],
-      products: [
-        'Premium Agarwood Oil', 'Agarwood Incense Products', 'Finished Agarwood Chips',
-        'Product Packaging', 'Quality Assurance Testing', 'Export Ready Products'
-      ],
-      quality: [
-        'Quality Inspection Process', 'Laboratory Testing', 'Expert Quality Assessment',
-        'Standards Compliance Check', 'Product Certification', 'Final Quality Control'
-      ],
-      training: [
-        'Farmer Training Session', 'Inoculation Workshop', 'Sustainable Practice Seminar',
-        'Hands-on Training', 'Expert Demonstration', 'Community Education'
-      ],
-      community: [
-        'Local Community Partnership', 'Farmer Cooperative Meeting', 'Social Responsibility Project',
-        'Community Development Program', 'Local Employment', 'Sustainable Livelihood'
-      ]
-    }
-
-    const alt = altTexts[category as keyof typeof altTexts]?.[i % altTexts[category as keyof typeof altTexts].length] || `${category} image ${i + 1}`
-    
-    return {
+  // Gallery images with new tags
+  const galleryImages = [
+    // Milestones
+    ...Array.from({ length: 2 }, (_, i) => ({
       id: i + 1,
-      src: `/images/gallery${i + 1}.jpg`,
-      alt: alt,
-      category: category
-    }
-  })
+      src: `/images/gallery/milestones/milestone${i + 1}.jpg`,
+      alt: `Company Milestone ${i + 1}`,
+      tag: 'Milestones'
+    })),
+    
+    // Community (7 images)
+    ...Array.from({ length: 7 }, (_, i) => ({
+      id: i + 3, // Start after milestones
+      src: `/images/gallery/community/community${i + 1}.jpg`,
+      alt: `Community Activity ${i + 1}`,
+      tag: 'Community'
+    })),
+    
+    // Plantation (10 images)
+    ...Array.from({ length: 10 }, (_, i) => ({
+      id: i + 10, // Start after community
+      src: `/images/gallery/plantation/plantation${i + 1}.jpg`,
+      alt: `Plantation View ${i + 1}`,
+      tag: 'Plantation'
+    })),
+    
+    // Products (1 image)
+    {
+      id: 20,
+      src: '/images/gallery/products/product1.jpg',
+      alt: 'Agarwood Product Display',
+      tag: 'Products'
+    },
+    
+    // Registered Agents (25 images)
+    ...Array.from({ length: 25 }, (_, i) => ({
+      id: i + 21, // Start after products
+      src: `/images/gallery/registered-agents/RA${i + 1}.jpg`,
+      alt: `Registered Agent ${i + 1}`,
+      tag: 'Registered Agents'
+    })),
+    
+    // Seminars (13 images)
+    ...Array.from({ length: 13 }, (_, i) => ({
+      id: i + 46, // Start after registered agents
+      src: `/images/gallery/seminars/seminar${i + 1}.jpg`,
+      alt: `Seminar Session ${i + 1}`,
+      tag: 'Seminars'
+    }))
+  ]
 
-  const categories = ['All', 'plantation', 'harvest', 'processing', 'products', 'quality', 'training', 'community']
-  const [activeCategory, setActiveCategory] = useState('All')
+  const tags = ['All', 'Milestones', 'Community', 'Plantation', 'Products', 'Registered Agents', 'Seminars']
+  const [activeTag, setActiveTag] = useState('All')
 
-  const filteredImages = activeCategory === 'All' 
+  const filteredImages = activeTag === 'All' 
     ? galleryImages 
-    : galleryImages.filter(img => img.category === activeCategory)
+    : galleryImages.filter(img => img.tag === activeTag)
 
   // Limit display to 15 images initially
   const displayedImages = showAllImages ? filteredImages : filteredImages.slice(0, 15)
@@ -106,7 +112,6 @@ export default function Gallery() {
       }
     }
     
-    // Cleanup: Ensure navbar is visible when component unmounts
     return () => {
       const navbar = document.querySelector('nav')
       if (navbar) {
@@ -118,7 +123,6 @@ export default function Gallery() {
   const handleImageClick = (id: number) => {
     setSelectedImage(id)
     setIsFullscreen(true)
-    // Prevent body scroll when fullscreen is open
     document.body.style.overflow = 'hidden'
   }
 
@@ -165,11 +169,18 @@ export default function Gallery() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isFullscreen, selectedImage])
 
+  // Upload handler (placeholder for future admin implementation)
+  const handleUpload = (e: React.FormEvent) => {
+    e.preventDefault()
+    alert('Admin feature coming soon! You will be able to upload images once admin system is implemented.')
+    setShowUploadModal(false)
+  }
+
   return (
     <section id="gallery" className="relative z-10 bg-[#060b05] px-6 py-20 shadow-[0_-20px_50px_rgba(0,0,0,0.4)] min-h-screen text-white">
       <div className="max-w-7xl mx-auto">
         
-        {/* HEADER */}
+        {/* HEADER with Upload Button (Admin Placeholder) */}
         <div 
           ref={(el) => { sectionRefs.current[0] = el }}
           data-section-index="0"
@@ -184,9 +195,77 @@ export default function Gallery() {
           <p className="text-zinc-400 text-lg max-w-3xl mx-auto mb-8 leading-relaxed">
             Explore our journey through sustainable agarwood cultivation, from plantation to premium products
           </p>
+          
+          {/* Admin Upload Button - Will be visible to admins only in future */}
+          <button
+            onClick={() => setShowUploadModal(true)}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 mb-8"
+          >
+            <Upload className="w-5 h-5" />
+            Upload Image
+          </button>
         </div>
 
-        {/* CATEGORY FILTERS */}
+        {/* UPLOAD MODAL (Placeholder for future admin implementation) */}
+        {showUploadModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowUploadModal(false)} />
+            
+            <div className="relative bg-[#0f130e] border border-green-800/30 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-scale-in">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold">Upload New Image</h3>
+                <button onClick={() => setShowUploadModal(false)} className="p-2 hover:bg-zinc-800 rounded-full">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <form onSubmit={handleUpload} className="space-y-4">
+                <div>
+                  <label className="block text-sm text-zinc-400 mb-2">Image File</label>
+                  <div className="border-2 border-dashed border-green-800/30 rounded-lg p-8 text-center hover:border-green-600/50 transition-colors cursor-pointer">
+                    <input type="file" accept="image/*" className="hidden" id="image-upload" />
+                    <label htmlFor="image-upload" className="cursor-pointer">
+                      <Plus className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                      <p className="text-zinc-400">Click to select image</p>
+                      <p className="text-xs text-zinc-600 mt-1">JPG, PNG, GIF up to 10MB</p>
+                    </label>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm text-zinc-400 mb-2">Image Tag</label>
+                  <select className="w-full p-3 bg-zinc-900/50 border border-green-800/30 rounded-lg text-white">
+                    {tags.filter(t => t !== 'All').map(tag => (
+                      <option key={tag} value={tag}>{tag}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm text-zinc-400 mb-2">Description (Alt Text)</label>
+                  <input 
+                    type="text" 
+                    placeholder="Enter image description"
+                    className="w-full p-3 bg-zinc-900/50 border border-green-800/30 rounded-lg text-white"
+                  />
+                </div>
+                
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300"
+                >
+                  Upload Image
+                </button>
+              </form>
+              
+              <p className="text-xs text-zinc-600 text-center mt-4">
+                Note: Admin authentication will be required in future updates
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* TAG FILTERS */}
         <div 
           ref={(el) => { sectionRefs.current[1] = el }}
           data-section-index="1"
@@ -194,15 +273,15 @@ export default function Gallery() {
             visibleSections.has(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
-          {categories.map((category, index) => (
+          {tags.map((tag, index) => (
             <button
-              key={category}
+              key={tag}
               onClick={() => {
-                setActiveCategory(category)
+                setActiveTag(tag)
                 setShowAllImages(false)
               }}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
-                activeCategory === category
+                activeTag === tag
                   ? 'bg-green-600 text-white scale-105'
                   : 'bg-zinc-800/50 text-zinc-300 hover:bg-zinc-700/50 hover:text-white'
               }`}
@@ -212,7 +291,7 @@ export default function Gallery() {
                 transform: visibleSections.has(1) ? 'translateY(0)' : 'translateY(20px)'
               }}
             >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
+              {tag}
             </button>
           ))}
         </div>
@@ -250,7 +329,7 @@ export default function Gallery() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <p className="text-white font-medium">{image.alt}</p>
-                      <p className="text-green-400 text-sm mt-1 capitalize">{image.category}</p>
+                      <p className="text-green-400 text-sm mt-1">{image.tag}</p>
                     </div>
                   </div>
                   
@@ -301,7 +380,7 @@ export default function Gallery() {
               </svg>
             </div>
             <h3 className="text-2xl font-bold text-white mb-3">No Images Found</h3>
-            <p className="text-zinc-400">Try selecting a different category</p>
+            <p className="text-zinc-400">Try selecting a different tag</p>
           </div>
         )}
 
@@ -317,18 +396,14 @@ export default function Gallery() {
             Showing {displayedImages.length} of {filteredImages.length} images • {galleryImages.length} total images in gallery • Click to enlarge
           </p>
           <div className="flex flex-wrap justify-center gap-4 mt-4">
-            <div className="text-xs text-zinc-600">
-              <span className="inline-block w-3 h-3 rounded-full bg-green-500 mr-1"></span> Plantation
-            </div>
-            <div className="text-xs text-zinc-600">
-              <span className="inline-block w-3 h-3 rounded-full bg-green-600 mr-1"></span> Harvest
-            </div>
-            <div className="text-xs text-zinc-600">
-              <span className="inline-block w-3 h-3 rounded-full bg-green-700 mr-1"></span> Processing
-            </div>
-            <div className="text-xs text-zinc-600">
-              <span className="inline-block w-3 h-3 rounded-full bg-green-800 mr-1"></span> Products
-            </div>
+            {tags.filter(t => t !== 'All').map((tag, index) => {
+              const colors = ['bg-green-500', 'bg-green-600', 'bg-green-700', 'bg-green-800', 'bg-emerald-500', 'bg-emerald-600', 'bg-emerald-700']
+              return (
+                <div key={tag} className="text-xs text-zinc-600">
+                  <span className={`inline-block w-3 h-3 rounded-full ${colors[index % colors.length]} mr-1`}></span> {tag}
+                </div>
+              )
+            })}
           </div>
         </div>
 
@@ -386,7 +461,7 @@ export default function Gallery() {
                       <h3 className="text-2xl font-bold text-white mb-2">{image.alt}</h3>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <p className="text-green-400 capitalize">{image.category}</p>
+                          <p className="text-green-400">{image.tag}</p>
                           <span className="text-zinc-500">•</span>
                           <p className="text-zinc-400 text-sm">
                             Gallery #{image.id}
