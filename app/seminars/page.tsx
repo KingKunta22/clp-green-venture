@@ -160,31 +160,6 @@ export default function Seminars() {
             Join hundreds of successful planters who started their journey with CLP.
           </p>
           
-          {/* CONTACT INFO */}
-          <div className="bg-zinc-900/50 border border-green-800/30 rounded-2xl p-6 max-w-2xl mx-auto mb-12 transition-all duration-1000 ease-out delay-300 transform opacity-0 translate-y-10 animate-fade-up">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <p className="text-green-400 text-sm mb-3">Contact Information</p>
-                <div className="space-y-3">
-                  <p className="text-white font-medium flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-green-500" />
-                    09165120219
-                  </p>
-                  <p className="text-white font-medium flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-green-500" />
-                    clpgreenventures@gmail.com
-                  </p>
-                </div>
-              </div>
-              <div>
-                <p className="text-green-400 text-sm mb-3">Office Location</p>
-                <p className="text-white font-medium flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-green-500" />
-                  Ground Floor, Unit 09, City Suites, F. Ramos St., Cebu City, 6000
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* SEMINARS GRID */}

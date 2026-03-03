@@ -289,7 +289,7 @@ export default function Products() {
         <div 
           ref={(el) => { sectionRefs.current[2] = el }}
           data-section-index="2"
-          className={`mb-24 transition-all duration-1000 ease-out transform ${
+          className={`mb-8 transition-all duration-1000 ease-out transform ${
             visibleSections.has(2) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
@@ -332,40 +332,6 @@ export default function Products() {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* CTA SECTION */}
-        <div 
-          ref={(el) => { sectionRefs.current[3] = el }}
-          data-section-index="3"
-          className={`bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-[3rem] p-8 md:p-12 text-center transition-all duration-1000 ease-out transform ${
-            visibleSections.has(3) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
-        >
-          <h3 className="text-3xl font-bold mb-6">Ready to Invest in Agarwood?</h3>
-          <p className="max-w-2xl mx-auto text-zinc-400 mb-8 text-lg leading-relaxed">
-            Start with as little as 10 trees. Get complete guidance from seedling to harvest. 
-            Join our community of successful agarwood farmers.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="#contact"
-              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-900/20 hover:shadow-green-900/40 active:scale-95"
-            >
-              Get Free Consultation
-            </a>
-            <a
-              href="https://zoom.us/j/your-zoom-id-here"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 border border-green-800/30 hover:border-green-600/50 active:scale-95"
-            >
-              Join Product Demo via Zoom
-            </a>
-          </div>
-          <p className="text-zinc-500 text-sm mt-8">
-            Free 30-minute consultation available • Zoom demos every Thursday 2PM
-          </p>
         </div>
 
       </div>

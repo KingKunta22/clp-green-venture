@@ -358,7 +358,7 @@ export default function Gallery() {
               ) : (
                 <>
                   <ChevronDown className="w-5 h-5" />
-                  View More Images ({filteredImages.length - 15} more)
+                  View All Images ({filteredImages.length - 15} more)
                 </>
               )}
             </button>
