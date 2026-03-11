@@ -1,10 +1,14 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { X, Calendar, Clock, MapPin, User, CheckCircle, Mail, Phone, Users, ChevronRight } from 'lucide-react'
+import { X, Calendar, Clock, MapPin, User, CheckCircle, Mail, Phone, CreditCard, QrCode, Wallet, Award, ChevronDown, ChevronUp } from 'lucide-react'
+import Image from 'next/image'
 
 export default function Seminars() {
   const [showForm, setShowForm] = useState(false)
+  const [showPastSeminars, setShowPastSeminars] = useState(false)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [selectedSeminar, setSelectedSeminar] = useState<any>(null)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,13 +16,13 @@ export default function Seminars() {
     seminarType: 'basic',
     participants: 1,
     preferredDate: '',
-    message: ''
+    paymentMethod: 'gcash' // 'gcash', 'maya', 'walkin'
   })
+  const [registrationStep, setRegistrationStep] = useState(1) // 1: form, 2: payment, 3: success
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set())
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
 
-  // Intersection Observer for scroll animations
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
@@ -38,7 +42,6 @@ export default function Seminars() {
       })
     }, observerOptions)
 
-    // Observe all sections
     sectionRefs.current.forEach((ref) => {
       if (ref) observer.observe(ref)
     })
@@ -46,98 +49,96 @@ export default function Seminars() {
     return () => observer.disconnect()
   }, [])
 
-  // Hide/show navbar when form is open
-  useEffect(() => {
-    const navbar = document.querySelector('nav')
-    if (navbar) {
-      if (showForm) {
-        navbar.style.display = 'none'
-        document.body.style.overflow = 'hidden'
-      } else {
-        navbar.style.display = 'flex'
-        document.body.style.overflow = 'auto'
-      }
-    }
-    
-    // Cleanup: Ensure navbar is visible when component unmounts
-    return () => {
-      const navbar = document.querySelector('nav')
-      if (navbar) {
-        navbar.style.display = 'flex'
-      }
-      document.body.style.overflow = 'auto'
-    }
-  }, [showForm])
-
+  // Updated seminars with your new forum
   const seminars = [
     {
       id: 1,
       title: "Basic Agarwood Cultivation",
       description: "Learn the fundamentals of agarwood planting, care, and basic inoculation techniques. Perfect for beginners.",
-      schedule: "Every Monday & Friday • 3:00 PM - 6:00 PM",
+      schedule: "Every Monday, Wednesday, Friday • 3:00 PM onwards",
       duration: "3 hours",
       instructor: "Juvelyn Quirog - Manager",
       level: "Beginner",
-      color: "from-green-600 to-emerald-700"
+      color: "from-green-600 to-emerald-700",
+      status: "ongoing",
+      fee: "Free",
+      location: "CLP Office, City Suites, Ramos St., Cebu City"
     },
     {
       id: 2,
-      title: "Advanced Inoculation Techniques",
-      description: "Master advanced methods for maximizing agarwood resin production and quality control.",
-      schedule: "Every Tuesday & Saturday • 3:00 PM - 6:00 PM",
-      duration: "3 hours",
-      instructor: "Charlie L. Patigue - CEO",
-      level: "Advanced",
-      color: "from-green-700 to-emerald-800"
+      title: "Scientific Forum on Growing Agarwood",
+      description: "Expand your knowledge in agarwood cultivation with renowned agriculturist and forester Dr. Jimmy Salar. Learn scientific insights and modern techniques in sustainable agarwood farming. Perfect for farmers, investors, and enthusiasts.",
+      schedule: "March 28, 2026 (Saturday) • 10:00 AM",
+      duration: "Full day",
+      instructor: "Dr. Jimmy Salar - Agriculturist & Forester",
+      level: "All Levels",
+      color: "from-green-700 to-emerald-800",
+      status: "upcoming",
+      fee: "₱250",
+      location: "Ground Floor, Unit 9 CLP Office, City Suites, Ramos St., Cebu City",
+      gcash: "0956 573 7821",
+      gcashName: "J******E P."
     },
     {
       id: 3,
       title: "Business & Investment in Agarwood",
-      description: "Learn how to build a sustainable agarwood business, from plantation to market.",
-      schedule: "Every Wednesday & Thursday • 3:00 PM - 6:00 PM",
+      description: "Learn how to build a sustainable agarwood business, from plantation to market. Ideal for entrepreneurs and investors.",
+      schedule: "Every Tuesday, Thursday, Saturday • 6:00 PM onwards",
       duration: "3 hours",
       instructor: "Juvelyn Quirog & Charlie L. Patigue",
       level: "All Levels",
-      color: "from-green-800 to-emerald-900"
+      color: "from-green-800 to-emerald-900",
+      status: "ongoing",
+      fee: "Free",
+      location: "CLP Office, City Suites, Ramos St., Cebu City"
     }
   ]
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleRegisterClick = (seminar: any) => {
+    setSelectedSeminar(seminar)
+    setShowForm(true)
+    setRegistrationStep(1)
+  }
+
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Form submitted:', formData)
-    setIsSubmitted(true)
+    setRegistrationStep(2) // Move to payment step
+  }
+
+  const handlePaymentSubmit = (method: string) => {
+    setFormData({...formData, paymentMethod: method})
     
-    setTimeout(() => {
-      setIsSubmitted(false)
-      setShowForm(false)
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        seminarType: 'basic',
-        participants: 1,
-        preferredDate: '',
-        message: ''
-      })
-    }, 3000)
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: name === 'participants' ? parseInt(value) || 1 : value
-    }))
-  }
-
-  // Close form on Escape key
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && showForm) setShowForm(false)
+    if (method === 'walkin') {
+      // Walk-in registration - no payment needed now
+      setRegistrationStep(3) // Show success
+      // Save registration to your system
+      saveRegistration('walkin')
+    } else {
+      // GCash/Maya - show payment instructions
+      setShowPaymentModal(true)
     }
-    window.addEventListener('keydown', handleEsc)
-    return () => window.removeEventListener('keydown', handleEsc)
-  }, [showForm])
+  }
+
+  const saveRegistration = (paymentType: string) => {
+    // Here you would save to your database
+    console.log('Registration saved:', {
+      ...formData,
+      seminar: selectedSeminar,
+      paymentType,
+      registrationDate: new Date(),
+      registrationId: 'REG-' + Date.now()
+    })
+    
+    // Generate a unique registration code
+    const regCode = 'CLP-' + Math.random().toString(36).substr(2, 9).toUpperCase()
+    localStorage.setItem('registrationCode', regCode)
+  }
+
+  const confirmPayment = () => {
+    setShowPaymentModal(false)
+    setRegistrationStep(3) // Show success
+    saveRegistration('online')
+  }
 
   return (
     <section id="seminars" className="relative z-10 bg-[#060b05] px-6 py-20 shadow-[0_-20px_50px_rgba(0,0,0,0.4)] min-h-screen text-white">
@@ -156,279 +157,341 @@ export default function Seminars() {
             CLP <span className="text-green-600">Agarwood</span> Seminars
           </h1>
           <p className="text-zinc-400 text-lg max-w-3xl mx-auto mb-8 leading-relaxed">
-            Transform your knowledge of agarwood cultivation with our expert-led seminars. 
-            Join hundreds of successful planters who started their journey with CLP.
+            Join our regular seminars or special forums with expert speakers
           </p>
           
+          {/* CONTACT INFO */}
+          <div className="bg-zinc-900/50 border border-green-800/30 rounded-2xl p-6 max-w-2xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <p className="text-green-400 text-sm mb-3">Contact Us</p>
+                <div className="space-y-3">
+                  <p className="text-white font-medium flex items-center gap-3">
+                    <Phone className="w-5 h-5 text-green-500" />
+                    0916 512 0219
+                  </p>
+                  <p className="text-white font-medium flex items-center gap-3">
+                    <Mail className="w-5 h-5 text-green-500" />
+                    clpgreenventures@gmail.com
+                  </p>
+                </div>
+              </div>
+              <div>
+                <p className="text-green-400 text-sm mb-3">Payment Options</p>
+                <div className="space-y-2">
+                  <p className="text-white text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    GCash: 0956 573 7821
+                  </p>
+                  <p className="text-white text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    PayMaya: Available
+                  </p>
+                  <p className="text-white text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                    Walk-in: Cash/GCash/Maya
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* SEMINARS GRID */}
         <div 
           ref={(el) => { sectionRefs.current[1] = el }}
           data-section-index="1"
-          className={`grid md:grid-cols-3 gap-8 mb-16 transition-all duration-1000 ease-out transform ${
-            visibleSections.has(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
+          className="mb-8"
         >
-          {seminars.map((seminar, index) => (
-            <div 
-              key={seminar.id}
-              className={`bg-zinc-900/30 border border-green-800/20 rounded-2xl overflow-hidden hover:border-green-600/30 transition-all duration-500 hover:translate-y-[-5px] group transform ${
-                visibleSections.has(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
-              style={{ transitionDelay: `${index * 200}ms` }}
-            >
-              {/* SEMINAR HEADER */}
-              <div className={`bg-gradient-to-r ${seminar.color} p-6`}>
-                <h3 className="text-2xl font-bold mb-2">{seminar.title}</h3>
-                <span className="inline-block bg-white/20 px-3 py-1 rounded-full text-sm font-medium">
-                  {seminar.level}
-                </span>
-              </div>
-              
-              {/* SEMINAR DETAILS */}
-              <div className="p-6">
-                <p className="text-zinc-400 mb-6 leading-relaxed">{seminar.description}</p>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <Calendar className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-white font-medium">{seminar.schedule}</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 text-white">
-                    <Clock className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="font-medium">Duration: {seminar.duration}</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 text-white">
-                    <User className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="font-medium">Instructor: {seminar.instructor}</span>
+          <div className="grid md:grid-cols-3 gap-6">
+            {seminars.map((seminar, index) => (
+              <div 
+                key={seminar.id}
+                className="bg-zinc-900/30 border border-green-800/20 rounded-2xl overflow-hidden hover:border-green-600/30 transition-all duration-500 hover:-translate-y-1 flex flex-col"
+              >
+                {/* SEMINAR HEADER */}
+                <div className={`bg-gradient-to-r ${seminar.color} p-5`}>
+                  <h3 className="text-xl font-bold">{seminar.title}</h3>
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="inline-block bg-white/20 px-3 py-1 rounded-full text-xs font-medium">
+                      {seminar.level}
+                    </span>
+                    {seminar.fee !== "Free" && (
+                      <span className="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded-full">
+                        {seminar.fee}
+                      </span>
+                    )}
                   </div>
                 </div>
                 
-                <button
-                  onClick={() => {
-                    setFormData(prev => ({...prev, seminarType: seminar.id.toString()}))
-                    setShowForm(true)
-                  }}
-                  className="w-full mt-8 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group-hover:shadow-lg group-hover:shadow-green-900/20"
-                >
-                  Register Now
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* BECOME A PLANTER CTA */}
-        <div 
-          ref={(el) => { sectionRefs.current[2] = el }}
-          data-section-index="2"
-          className={`bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-[3rem] p-8 md:p-12 text-center mb-16 transition-all duration-1000 ease-out transform ${
-            visibleSections.has(2) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
-        >
-          <h3 className="text-3xl font-bold mb-6">Start Your Agarwood Journey Today</h3>
-          <p className="max-w-2xl mx-auto text-zinc-400 mb-8 text-lg leading-relaxed">
-            Sign up for our seminars and start your journey in sustainable agarwood farming. 
-            Limited slots available for each session.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => setShowForm(true)}
-              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-900/20 hover:shadow-green-900/40"
-            >
-              Sign Up for Seminars
-            </button>
-            <a
-              href="https://zoom.us/j/your-zoom-id-here"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 border border-green-800/30 hover:border-green-600/50"
-            >
-              Join Zoom Session
-            </a>
-          </div>
-          <p className="text-zinc-500 text-sm mt-8">
-            Can't attend in person? Join our virtual seminars via Zoom!
-          </p>
-        </div>
-
-        {/* REGISTRATION FORM MODAL */}
-        {showForm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* BACKDROP */}
-            <div 
-              className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
-              onClick={() => setShowForm(false)}
-            />
-            
-            {/* MODAL */}
-            <div className="relative bg-[#0f130e] border border-green-800/30 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-scale-in">
-              {/* HEADER */}
-              <div className="sticky top-0 bg-[#0f130e] border-b border-green-800/30 p-6 flex justify-between items-center">
-                <div>
-                  <h3 className="text-2xl font-bold text-white">Register for Seminar</h3>
-                  <p className="text-zinc-400 text-sm mt-1">Fill out the form below to reserve your slot</p>
-                </div>
-                <button
-                  onClick={() => setShowForm(false)}
-                  className="p-2 hover:bg-zinc-800/50 rounded-full transition-colors duration-300 hover:scale-110"
-                >
-                  <X className="w-6 h-6 text-zinc-400" />
-                </button>
-              </div>
-              
-              {/* SUCCESS MESSAGE */}
-              {isSubmitted ? (
-                <div className="p-8 text-center animate-fade-in">
-                  <div className="w-20 h-20 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-700/30 animate-scale-in">
-                    <CheckCircle className="w-10 h-10 text-green-500" />
-                  </div>
-                  <h4 className="text-2xl font-bold text-white mb-3">Registration Successful!</h4>
-                  <p className="text-zinc-400 mb-6">
-                    Thank you for registering. Our team will contact you within 24 hours to confirm your slot.
+                {/* SEMINAR DETAILS */}
+                <div className="p-5 flex flex-col flex-1">
+                  <p className="text-zinc-400 text-sm leading-relaxed line-clamp-3 mb-4">
+                    {seminar.description}
                   </p>
+                  
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-start gap-2">
+                      <Calendar className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-white text-sm">{seminar.schedule}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-white text-sm">Duration: {seminar.duration}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-white text-sm">{seminar.instructor}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-white text-sm line-clamp-1">{seminar.location}</span>
+                    </div>
+                  </div>
+                  
                   <button
-                    onClick={() => setShowForm(false)}
-                    className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 hover:scale-105"
+                    onClick={() => handleRegisterClick(seminar)}
+                    className="w-full mt-auto bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300"
                   >
-                    Close
+                    Register Now
                   </button>
                 </div>
-              ) : (
-                /* REGISTRATION FORM */
-                <form onSubmit={handleSubmit} className="p-6 animate-fade-in">
-                  <div className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="animate-fade-up" style={{ animationDelay: '0.1s' }}>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">
-                          Full Name *
-                        </label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white placeholder:text-zinc-500 hover:border-green-600/50"
-                          placeholder="Enter your full name"
-                        />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* PAYMENT INFO BANNER */}
+        <div className="bg-blue-900/20 border border-blue-800/30 rounded-xl p-4 mb-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <CreditCard className="w-5 h-5 text-blue-400" />
+              <p className="text-sm text-blue-300">
+                <span className="font-bold">Payment Methods:</span> GCash, PayMaya, or Walk-in Cash
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xs bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full">
+                💳 Bank Cards: Coming Soon
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* REGISTRATION MODAL */}
+        {showForm && selectedSeminar && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowForm(false)} />
+            
+            <div className="relative bg-[#0f130e] border border-green-800/30 rounded-2xl shadow-2xl w-full max-w-md">
+              
+              {/* STEP 1: Registration Form */}
+              {registrationStep === 1 && (
+                <>
+                  <div className="p-5 border-b border-green-800/30">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h3 className="text-xl font-bold text-white">Register</h3>
+                        <p className="text-zinc-400 text-xs">{selectedSeminar.title}</p>
                       </div>
-                      
-                      <div className="animate-fade-up" style={{ animationDelay: '0.2s' }}>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">
-                          Email Address *
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white placeholder:text-zinc-500 hover:border-green-600/50"
-                          placeholder="Enter your email"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="animate-fade-up" style={{ animationDelay: '0.3s' }}>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">
-                          Phone Number *
-                        </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white placeholder:text-zinc-500 hover:border-green-600/50"
-                          placeholder="09165120219"
-                        />
-                      </div>
-                      
-                      <div className="animate-fade-up" style={{ animationDelay: '0.4s' }}>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">
-                          Number of Participants *
-                        </label>
-                        <input
-                          type="number"
-                          name="participants"
-                          value={formData.participants}
-                          onChange={handleInputChange}
-                          min="1"
-                          max="10"
-                          required
-                          className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white hover:border-green-600/50"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="animate-fade-up" style={{ animationDelay: '0.5s' }}>
-                      <label className="block text-sm font-medium text-zinc-300 mb-2">
-                        Select Seminar *
-                      </label>
-                      <select
-                        name="seminarType"
-                        value={formData.seminarType}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white hover:border-green-600/50"
-                      >
-                        <option value="basic">Basic Agarwood Cultivation (Mon & Fri, 3-6PM)</option>
-                        <option value="advanced">Advanced Inoculation Techniques (Tue & Sat, 3-6PM)</option>
-                        <option value="business">Business & Investment in Agarwood (Wed & Thu, 3-6PM)</option>
-                      </select>
-                    </div>
-                    
-                    <div className="animate-fade-up" style={{ animationDelay: '0.6s' }}>
-                      <label className="block text-sm font-medium text-zinc-300 mb-2">
-                        Preferred Date
-                      </label>
-                      <input
-                        type="date"
-                        name="preferredDate"
-                        value={formData.preferredDate}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white hover:border-green-600/50"
-                      />
-                    </div>
-                    
-                    <div className="animate-fade-up" style={{ animationDelay: '0.7s' }}>
-                      <label className="block text-sm font-medium text-zinc-300 mb-2">
-                        Additional Message (Optional)
-                      </label>
-                      <textarea
-                        name="message"
-                        value={formData.message}
-                        onChange={handleInputChange}
-                        rows={4}
-                        className="w-full px-4 py-3 bg-zinc-900/50 border border-green-800/30 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all duration-300 text-white resize-none placeholder:text-zinc-500 hover:border-green-600/50"
-                        placeholder="Any specific questions or requirements..."
-                      />
-                    </div>
-                    
-                    <div className="pt-4 animate-fade-up" style={{ animationDelay: '0.8s' }}>
-                      <button
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-4 px-6 rounded-lg text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-900/20"
-                      >
-                        Submit Registration
+                      <button onClick={() => setShowForm(false)} className="p-1.5 hover:bg-zinc-800 rounded-full">
+                        <X className="w-5 h-5 text-zinc-400" />
                       </button>
-                      <p className="text-sm text-zinc-500 text-center mt-4">
-                        We'll contact you within 24 hours to confirm your registration
-                      </p>
                     </div>
                   </div>
-                </form>
+                  
+                  <form onSubmit={handleFormSubmit} className="p-5">
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        placeholder="Full Name *"
+                        required
+                        className="w-full px-3 py-2.5 bg-zinc-900/50 border border-green-800/30 rounded-lg text-white text-sm"
+                      />
+                      <input
+                        type="email"
+                        placeholder="Email *"
+                        required
+                        className="w-full px-3 py-2.5 bg-zinc-900/50 border border-green-800/30 rounded-lg text-white text-sm"
+                      />
+                      <input
+                        type="tel"
+                        placeholder="Phone Number *"
+                        required
+                        className="w-full px-3 py-2.5 bg-zinc-900/50 border border-green-800/30 rounded-lg text-white text-sm"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Number of Participants"
+                        min="1"
+                        defaultValue="1"
+                        className="w-full px-3 py-2.5 bg-zinc-900/50 border border-green-800/30 rounded-lg text-white text-sm"
+                      />
+                      
+                      <button
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white font-bold py-3 rounded-lg"
+                      >
+                        Continue to Payment
+                      </button>
+                    </div>
+                  </form>
+                </>
+              )}
+
+              {/* STEP 2: Payment Selection */}
+              {registrationStep === 2 && (
+                <>
+                  <div className="p-5 border-b border-green-800/30">
+                    <h3 className="text-xl font-bold text-white">Select Payment</h3>
+                    <p className="text-zinc-400 text-xs">Fee: {selectedSeminar.fee}</p>
+                  </div>
+                  
+                  <div className="p-5 space-y-3">
+                    <button
+                      onClick={() => handlePaymentSubmit('gcash')}
+                      className="w-full p-4 bg-blue-600/20 border border-blue-800/30 rounded-xl hover:bg-blue-600/30 transition-all"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold">GCash</span>
+                        </div>
+                        <div className="text-left">
+                          <p className="font-bold">Pay via GCash</p>
+                          <p className="text-xs text-zinc-400">0956 573 7821 (J******E P.)</p>
+                        </div>
+                      </div>
+                    </button>
+                    
+                    <button
+                      onClick={() => handlePaymentSubmit('maya')}
+                      className="w-full p-4 bg-blue-600/20 border border-blue-800/30 rounded-xl hover:bg-blue-600/30 transition-all"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold">Maya</span>
+                        </div>
+                        <div className="text-left">
+                          <p className="font-bold">Pay via PayMaya</p>
+                          <p className="text-xs text-zinc-400">Available now</p>
+                        </div>
+                      </div>
+                    </button>
+                    
+                    <button
+                      onClick={() => handlePaymentSubmit('walkin')}
+                      className="w-full p-4 bg-green-600/20 border border-green-800/30 rounded-xl hover:bg-green-600/30 transition-all"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                          <Wallet className="w-5 h-5" />
+                        </div>
+                        <div className="text-left">
+                          <p className="font-bold">Walk-in Payment</p>
+                          <p className="text-xs text-zinc-400">Pay at our office (Cash/GCash/Maya)</p>
+                        </div>
+                      </div>
+                    </button>
+                    
+                    <p className="text-xs text-center text-zinc-500 mt-4">
+                      💳 Bank cards not yet available
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {/* STEP 3: Success with Animation */}
+              {registrationStep === 3 && (
+                <div className="p-8 text-center animate-fade-in">
+                  <div className="relative mb-6">
+                    <div className="w-24 h-24 mx-auto bg-green-500/20 rounded-full flex items-center justify-center animate-pulse">
+                      <div className="w-20 h-20 bg-green-500/30 rounded-full flex items-center justify-center animate-ping absolute"></div>
+                      <CheckCircle className="w-12 h-12 text-green-500 relative z-10" />
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold text-white mb-2">Registration Successful! 🎉</h3>
+                  
+                  <div className="bg-green-900/20 border border-green-800/30 rounded-xl p-4 mb-4">
+                    <p className="text-sm text-green-400 mb-2">Your Registration Code:</p>
+                    <p className="text-2xl font-mono font-bold text-white tracking-wider">
+                      {localStorage.getItem('registrationCode')}
+                    </p>
+                  </div>
+                  
+                  <p className="text-zinc-400 text-sm mb-4">
+                    {formData.paymentMethod === 'walkin' 
+                      ? 'Please visit our office on the seminar date. Bring this code.'
+                      : 'Please send payment to GCash 0956 573 7821 and send receipt to our Facebook page.'}
+                  </p>
+                  
+                  <div className="flex gap-2 justify-center">
+                    <button
+                      onClick={() => window.print()}
+                      className="px-4 py-2 bg-zinc-800 rounded-lg text-sm"
+                    >
+                      Save Code
+                    </button>
+                    <button
+                      onClick={() => setShowForm(false)}
+                      className="px-4 py-2 bg-green-600 rounded-lg text-sm"
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           </div>
         )}
 
+        {/* GCASH PAYMENT MODAL */}
+        {showPaymentModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowPaymentModal(false)} />
+            
+            <div className="relative bg-[#0f130e] border border-green-800/30 rounded-2xl shadow-2xl w-full max-w-sm p-6">
+              <h3 className="text-xl font-bold mb-4">Pay via GCash</h3>
+              
+              <div className="bg-white p-4 rounded-xl mb-4">
+                {/* QR Code placeholder - you'd generate actual QR */}
+                <div className="w-48 h-48 mx-auto bg-gray-200 flex items-center justify-center">
+                  <QrCode className="w-32 h-32 text-gray-700" />
+                </div>
+              </div>
+              
+              <p className="text-center mb-2 font-bold">0956 573 7821</p>
+              <p className="text-center text-sm text-zinc-400 mb-4">J******E P.</p>
+              
+              <p className="text-xs text-zinc-500 mb-4">
+                1. Open GCash • 2. Scan QR or enter number • 3. Send {selectedSeminar?.fee}<br/>
+                4. Take screenshot of receipt • 5. Send to our Facebook page
+              </p>
+              
+              <button
+                onClick={confirmPayment}
+                className="w-full bg-green-600 py-3 rounded-lg font-bold"
+              >
+                I've Sent Payment
+              </button>
+            </div>
+          </div>
+        )}
+
       </div>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.5s ease-out forwards;
+        }
+      `}</style>
     </section>
   )
 }

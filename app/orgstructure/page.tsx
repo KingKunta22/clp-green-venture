@@ -57,8 +57,8 @@ export default function OrgStructure() {
       },
       {
         id: 2,
-        name: 'Maria Santos',
-        position: 'Chief Operations Officer',
+        name: 'Juvelyn Quirog',
+        position: 'Branch Manager/Speaker',
         department: 'Operations',
         email: 'maria.santos@clpgreenventure.com',
         phone: '(032) 123-4568',
