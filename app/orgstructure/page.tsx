@@ -484,6 +484,19 @@ export default function OrgStructure() {
             Have questions about our agarwood operations or want to speak with a specific department? Our team is ready to assist you.
           </p>
           
+          {/* GOOGLE MAP EMBED */}
+          <div className="max-w-4xl mx-auto mb-8 rounded-xl overflow-hidden shadow-lg">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1852.6013185560128!2d123.89739972546839!3d10.299764777659261!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9995aa580ac73%3A0x3fede629bc9b24ab!2sCity%20Suites%20Ramos%20Tower!5e0!3m2!1sen!2sph!4v1773295545444!5m2!1sen!2sph"
+              width="100%"
+              height={450}
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+
           <div className="bg-gradient-to-r from-green-900/20 to-zinc-900/20 border border-green-800/30 rounded-2xl p-8 max-w-3xl mx-auto mb-8">
             <div className="grid md:grid-cols-2 gap-8">
               <div>

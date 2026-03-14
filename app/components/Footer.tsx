@@ -51,15 +51,6 @@ export default function Footer() {
           
         </div>
 
-        {/* OFFICE LOCATION */}
-        <div className="bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-2xl p-6 mb-8 text-center">
-          <h3 className="text-xl font-bold mb-4">Office Location</h3>
-          <p className="text-zinc-300">
-            Ground Floor, Unit 09, City Suites<br />
-            F. Ramos St., Cebu City, 6000
-          </p>
-        </div>
-
         {/* COPYRIGHT */}
         <div className="border-t border-green-800/30 pt-8 text-center">
           <p className="text-zinc-500 text-sm">
