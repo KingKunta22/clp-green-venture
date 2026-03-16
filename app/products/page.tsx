@@ -1,12 +1,18 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, Leaf, DollarSign, Calendar, TrendingUp, Shield, Package, Users, CheckCircle, Zap, Clock } from 'lucide-react'
+import Image from 'next/image'
+import { ChevronLeft, ChevronRight, Leaf, DollarSign, Calendar, TrendingUp, Shield, Package, Users, CheckCircle, Zap, Clock, X, Facebook } from 'lucide-react'
 
 export default function Products() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set())
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
+  
+  // State for product modal and expanded description
+  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [showProductModal, setShowProductModal] = useState(false)
+  const [expandedDesc, setExpandedDesc] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     const observerOptions = {
@@ -35,6 +41,7 @@ export default function Products() {
   }, [])
 
   const agarwoodSlides = [
+    // ... unchanged ...
     {
       id: 1,
       title: "The Green Gold: Understanding Agarwood",
@@ -109,27 +116,34 @@ export default function Products() {
     }
   ]
 
+  // Other products with image paths
   const otherProducts = [
     {
       id: 1,
-      name: "Premium Agarwood Seedlings",
-      description: "Certified disease-free seedlings with 98% survival rate",
-      price: "₱350-₱500 per seedling",
-      features: ["6-12 months old", "Guaranteed purity", "Planting guide included"]
+      name: "M-SECRET Korean Skincare",
+      description: "Authentic Korean skincare products trusted by thousands. Whitening, anti-aging, and acne solutions.",
+      longDescription: "M-SECRET brings you the best of Korean skincare technology. Our products are dermatologically tested, cruelty-free, and formulated to deliver visible results in just 7 days. Choose from a range of serums, creams, and masks tailored to your skin type.",
+      price: "From ₱199",
+      features: ["Dermatologically tested", "Cruelty-free", "Visible results in 7 days"],
+      image: "/images/products/msecret.png"
     },
     {
       id: 2,
-      name: "Inoculation Starter Kit",
-      description: "Complete kit for home cultivators (10-50 trees)",
-      price: "₱8,000-₱35,000",
-      features: ["Fungal culture", "Tools", "Step-by-step video guide"]
+      name: "TALA Cleaning Solutions",
+      description: "Eco-friendly and powerful cleaning products for home and industrial use.",
+      longDescription: "TALA offers a complete line of biodegradable cleaning solutions that are tough on dirt but gentle on the planet. Our concentrated formulas mean you use less, save more, and reduce plastic waste. Safe for kids and pets.",
+      price: "From ₱99",
+      features: ["Biodegradable formula", "Concentrated", "Safe for kids and pets"],
+      image: "/images/products/tala.jpg"
     },
     {
       id: 3,
-      name: "Agarwood Oil (Pure)",
-      description: "100% pure agarwood oil for aromatherapy",
-      price: "₱15,000 per 5ml",
-      features: ["Therapeutic grade", "ISO certified", "Money-back guarantee"]
+      name: "Rated Coffee",
+      description: "Premium coffee blends for the perfect brew. Sustainably sourced and locally roasted.",
+      longDescription: "Rated Coffee is crafted for coffee lovers who appreciate quality. We source 100% Arabica beans from sustainable farms and roast them locally to ensure freshness. Available in grounds or whole beans, with a rich aroma and smooth finish.",
+      price: "From ₱250 per pack",
+      features: ["100% Arabica beans", "Rich aroma", "Available in grounds or beans"],
+      image: "/images/products/ratedcoffee.png"
     }
   ]
 
@@ -143,6 +157,29 @@ export default function Products() {
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index)
+  }
+
+  const toggleDescription = (productId: number) => {
+    const newSet = new Set(expandedDesc)
+    if (newSet.has(productId)) {
+      newSet.delete(productId)
+    } else {
+      newSet.add(productId)
+    }
+    setExpandedDesc(newSet)
+  }
+
+  const openProductModal = (product: any) => {
+    setSelectedProduct(product)
+    setShowProductModal(true)
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeProductModal = () => {
+    setShowProductModal(false)
+    setSelectedProduct(null)
+    document.body.style.overflow = 'auto'
   }
 
   return (
@@ -295,46 +332,148 @@ export default function Products() {
         >
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold mb-3">Other Available Products</h3>
-            <p className="text-zinc-500 text-lg max-w-2xl mx-auto">Everything you need for successful agarwood cultivation</p>
+            <p className="text-zinc-500 text-lg max-w-2xl mx-auto">From our direct selling family – trusted brands you'll love</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {otherProducts.map((product) => (
-              <div 
-                key={product.id}
-                className="bg-zinc-900/30 border border-green-800/20 rounded-2xl p-6 hover:border-green-600/30 transition-all duration-500 hover:translate-y-[-5px] group hover:shadow-xl"
-              >
-                <div className="mb-6">
-                  <div className="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 hover:bg-green-900/40 hover:scale-110">
-                    <Package className="w-6 h-6 text-green-500 transition-transform duration-300 hover:scale-110" />
+            {otherProducts.map((product) => {
+              const isExpanded = expandedDesc.has(product.id)
+              return (
+                <div 
+                  key={product.id}
+                  className="bg-zinc-900/30 border border-green-800/20 rounded-2xl overflow-hidden hover:border-green-600/30 transition-all duration-500 hover:-translate-y-1 group flex flex-col"
+                >
+                  {/* Product Image */}
+                  <div className="relative w-full h-80 overflow-hidden">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
                   </div>
-                  <h4 className="text-xl font-bold text-white mb-2 transition-colors duration-300 group-hover:text-green-400">{product.name}</h4>
-                  <p className="text-zinc-400 text-sm transition-opacity duration-300 group-hover:text-zinc-300">{product.description}</p>
-                </div>
-                
-                <div className="space-y-3 mb-6">
-                  {product.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-3">
-                      <div className="w-5 h-5 bg-green-900/30 rounded-full flex items-center justify-center transition-all duration-300 hover:bg-green-900/40">
-                        <div className="w-2 h-2 bg-green-500 rounded-full transition-transform duration-300 hover:scale-125" />
-                      </div>
-                      <span className="text-white text-sm transition-colors duration-300 group-hover:text-green-300">{feature}</span>
+
+                  <div className="p-5 flex flex-col flex-1">
+                    <h4 className="text-xl font-bold text-white mb-2 transition-colors duration-300 group-hover:text-green-400">
+                      {product.name}
+                    </h4>
+                    
+                    {/* Description with toggle */}
+                    <div className="mb-3">
+                      <p className={`text-zinc-400 text-sm leading-relaxed ${isExpanded ? '' : 'line-clamp-2'}`}>
+                        {isExpanded ? product.longDescription : product.description}
+                      </p>
+                      {(product.longDescription || product.description.length > 100) && (
+                        <button
+                          onClick={() => toggleDescription(product.id)}
+                          className="text-green-400 text-xs mt-1 hover:underline"
+                        >
+                          {isExpanded ? 'Show less' : 'Read more'}
+                        </button>
+                      )}
                     </div>
-                  ))}
+                    
+                    <div className="space-y-2 mb-4">
+                      {product.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                          <span className="text-white text-xs">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="mt-auto border-t border-green-800/30 pt-4">
+                      <p className="text-green-400 font-bold text-lg mb-3">{product.price}</p>
+                      <button
+                        onClick={() => openProductModal(product)}
+                        className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2.5 rounded-lg transition-all duration-300 hover:scale-[1.02]"
+                      >
+                        Inquire Now
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="border-t border-green-800/30 pt-4 transition-all duration-300 group-hover:border-green-600/30">
-                  <p className="text-green-400 font-bold text-lg mb-4 transition-transform duration-300 group-hover:scale-105">{product.price}</p>
-                  <button className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-900/20 hover:shadow-green-900/40">
-                    Inquire Now
-                  </button>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
 
       </div>
+
+      {/* PRODUCT INQUIRY MODAL */}
+      {showProductModal && selectedProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={closeProductModal} />
+          
+          <div className="relative bg-[#0f130e] border border-green-800/30 rounded-2xl shadow-2xl w-full max-w-4xl animate-fade-in overflow-hidden">
+            
+
+            {/* Modal Body - Two columns */}
+            <div className="grid grid-cols-2 gap-6 p-6">
+              {/* Left column - Image */}
+              <div className="relative h-full min-h-[300px] rounded-lg overflow-hidden">
+                <Image
+                  src={selectedProduct.image}
+                  alt={selectedProduct.name}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
+              {/* Right column - Details */}
+              <div className="flex flex-col">
+                
+                {/* Modal Header */}
+                <div className="py-4 border-b border-green-800/30 flex justify-between items-center">
+                  <h3 className="text-xl font-bold text-white">{selectedProduct.name}</h3>
+                  <button onClick={closeProductModal} className="p-1.5 hover:bg-zinc-800 rounded-full transition-colors">
+                    <X className="w-5 h-5 text-zinc-400" />
+                  </button>
+                </div>
+
+                <p className="text-zinc-300 text-sm mb-3">{selectedProduct.longDescription || selectedProduct.description}</p>
+                <p className="text-green-400 font-bold text-lg mb-4">{selectedProduct.price}</p>
+
+                {/* Features list */}
+                <div className="space-y-2 mb-4">
+                  {selectedProduct.features.map((feature: string, idx: number) => (
+                    <div key={idx} className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-white text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer - Facebook Button full width */}
+            <div className="border-t border-green-800/30 p-4">
+              <a
+                href="https://web.facebook.com/profile.php?id=61573163535908"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300"
+              >
+                <Facebook className="w-5 h-5" />
+                Message us on Facebook to Order
+              </a>
+              <p className="text-xs text-zinc-500 text-center mt-2">
+                Clicking the button will open Facebook Messenger
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.3s ease-out forwards;
+        }
+      `}</style>
     </section>
   )
 }

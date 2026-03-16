@@ -9,6 +9,7 @@ export default function About() {
   const [currentAwardIndex, setCurrentAwardIndex] = useState(0)
   const [showAllAwards, setShowAllAwards] = useState(false)
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [expandedAwardDesc, setExpandedAwardDesc] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     const observerOptions = {
@@ -252,7 +253,7 @@ export default function About() {
           </div>
         </div>
 
-        {/* 3. AWARDS & RECOGNITION - WITH IMAGES AND EXPAND BUTTON */}
+        {/* 3. AWARDS & RECOGNITION */}
         <div 
           ref={(el) => { sectionRefs.current[2] = el }}
           data-section-index="2"
@@ -265,119 +266,105 @@ export default function About() {
             <p className="text-zinc-400 text-lg max-w-2xl mx-auto">Recognition for our work in direct selling, skincare, and now agarwood</p>
           </div>
 
-          {/* AWARDS CAROUSEL */}
-          <div className="relative">
-            {/* MAIN AWARD DISPLAY */}
-            <div className="bg-gradient-to-br from-green-900/20 to-zinc-900/30 border border-green-800/30 rounded-3xl p-8 md:p-12">
-              <div className="flex flex-col md:flex-row items-center gap-8">
-                {/* AWARD IMAGE */}
-                <div className="flex-shrink-0 w-32 h-32 relative">
-                  <Image
-                    src={displayedAwards[currentAwardIndex].image}
-                    alt={displayedAwards[currentAwardIndex].title}
-                    fill
-                    className="object-cover rounded-2xl border-2 border-green-500/30"
-                  />
-                </div>
-
-                {/* AWARD DETAILS */}
-                <div className="flex-grow">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                    <div>
-                      <h4 className="text-2xl font-bold text-white mb-2">{displayedAwards[currentAwardIndex].title}</h4>
-                      <div className="flex items-center gap-4 text-sm">
-                        <span className="text-green-400 font-medium">{displayedAwards[currentAwardIndex].issuer}</span>
-                        <span className="text-zinc-500">•</span>
-                        <span className="text-zinc-400">{displayedAwards[currentAwardIndex].year}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-zinc-400 leading-relaxed">
-                    {displayedAwards[currentAwardIndex].fullDescription}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* CAROUSEL CONTROLS */}
-            <div className="flex items-center justify-center mt-8 gap-6">
-              <button
-                onClick={prevAward}
-                className="p-3 rounded-full bg-green-900/30 border border-green-800/30 hover:bg-green-800/40 transition-all duration-300 hover:scale-110"
-              >
-                <ChevronLeft className="w-5 h-5 text-green-400" />
-              </button>
-              
-              {/* INDICATORS */}
-              <div className="flex gap-2">
-                {displayedAwards.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentAwardIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      index === currentAwardIndex 
-                        ? 'bg-green-500 w-6' 
-                        : 'bg-zinc-600 hover:bg-zinc-500'
-                    }`}
-                  />
-                ))}
-              </div>
-              
-              <button
-                onClick={nextAward}
-                className="p-3 rounded-full bg-green-900/30 border border-green-800/30 hover:bg-green-800/40 transition-all duration-300 hover:scale-110"
-              >
-                <ChevronRight className="w-5 h-5 text-green-400" />
-              </button>
-            </div>
-
-            {/* EXPAND BUTTON */}
-            {awards.length > 3 && (
-              <div className="text-center mt-8">
-                <button
-                  onClick={() => {
-                    setShowAllAwards(!showAllAwards)
-                    setCurrentAwardIndex(0)
-                  }}
-                  className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors"
+          {/* First Three Awards - Large Display with Images */}
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            {awards.slice(0, 3).map((award) => {
+              const isExpanded = expandedAwardDesc.has(award.id)
+              return (
+                <div
+                  key={award.id}
+                  className="bg-gradient-to-br from-green-900/20 to-zinc-900/30 border border-green-800/30 rounded-2xl overflow-hidden hover:border-green-600/30 transition-all duration-300 flex flex-col"
                 >
-                  {showAllAwards ? (
-                    <>Show Less <ChevronUp className="w-4 h-4" /></>
-                  ) : (
-                    <>View All Awards ({awards.length - 3} more) <ChevronDown className="w-4 h-4" /></>
-                  )}
-                </button>
-              </div>
-            )}
-
-            {/* AWARDS GRID (when expanded) */}
-            {showAllAwards && (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 animate-fadeIn">
-                {awards.map((award) => (
-                  <div 
-                    key={award.id}
-                    className="p-6 bg-zinc-900/30 border border-green-800/30 rounded-2xl hover:border-green-600/30 transition-all duration-300"
-                  >
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-16 h-16 relative flex-shrink-0">
-                        <Image
-                          src={award.image}
-                          alt={award.title}
-                          fill
-                          className="object-cover rounded-lg"
-                        />
-                      </div>
-                      <div>
-                        <h5 className="font-bold text-white text-sm">{award.title}</h5>
-                        <p className="text-xs text-zinc-500">{award.year}</p>
-                      </div>
-                    </div>
-                    <p className="text-zinc-400 text-sm">{award.shortDescription}</p>
+                  {/* Image - takes most of the card */}
+                  <div className="relative w-full h-48 md:h-56">
+                    <Image
+                      src={award.image}
+                      alt={award.title}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                ))}
-              </div>
-            )}
+                  
+                  {/* Content */}
+                  <div className="p-5 flex flex-col flex-1">
+                    <h4 className="text-xl font-bold text-white mb-1">{award.title}</h4>
+                    <div className="flex items-center gap-2 text-sm mb-3 w-full">
+                      <span className="text-green-400 font-medium truncate">{award.issuer}</span>
+                      <span className="text-zinc-500 flex-shrink-0">•</span>
+                      <span className="text-zinc-400 flex-shrink-0">{award.year}</span>
+                    </div>
+
+                    {/* Description with toggle */}
+                    <div className="mb-3">
+                      <p className={`text-zinc-400 text-sm leading-relaxed ${isExpanded ? '' : 'line-clamp-3'}`}>
+                        {award.fullDescription}
+                      </p>
+                      {award.fullDescription.length > 150 && (
+                        <button
+                          onClick={() => {
+                            const newSet = new Set(expandedAwardDesc)
+                            if (isExpanded) {
+                              newSet.delete(award.id)
+                            } else {
+                              newSet.add(award.id)
+                            }
+                            setExpandedAwardDesc(newSet)
+                          }}
+                          className="text-green-400 text-xs mt-1 hover:underline"
+                        >
+                          {isExpanded ? 'Show less' : 'Read more'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
+
+          {/* View All Awards Button */}
+          {awards.length > 3 && (
+            <div className="text-center mb-8">
+              <button
+                onClick={() => setShowAllAwards(!showAllAwards)}
+                className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors"
+              >
+                {showAllAwards ? (
+                  <>Show Less <ChevronUp className="w-4 h-4" /></>
+                ) : (
+                  <>View All Awards ({awards.length - 3} more) <ChevronDown className="w-4 h-4" /></>
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* All Awards Grid (when expanded) */}
+          {showAllAwards && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 animate-fadeIn">
+              {awards.map((award) => (
+                <div
+                  key={award.id}
+                  className="p-5 bg-zinc-900/30 border border-green-800/30 rounded-xl hover:border-green-600/30 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-12 h-12 relative flex-shrink-0">
+                      <Image
+                        src={award.image}
+                        alt={award.title}
+                        fill
+                        className="object-cover rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <h5 className="font-bold text-white text-sm leading-tight">{award.title}</h5>
+                      <p className="text-xs text-zinc-500">{award.year}</p>
+                    </div>
+                  </div>
+                  <p className="text-zinc-400 text-xs leading-relaxed line-clamp-3">{award.shortDescription}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* 4. CALL TO ACTION */}
