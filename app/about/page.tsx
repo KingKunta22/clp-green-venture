@@ -47,7 +47,7 @@ export default function About() {
       fullDescription: "Business Achievement & Recognition Awards 2023 is presented to CLP DIRECT SELLING (TALA) as Cleaning Solutions Provider of the Year METRO CEBU given this 23rd day of September 2023 at the Hallmark Ballroom A, Harolds Hotel by the Business Achievement and Recognition Awards Council for Excellence.",
       shortDescription: "Recognized as the top cleaning solutions provider in Metro Cebu for 2023.",
       icon: <Award className="w-8 h-8" />,
-      image: "/images/awards/award1.jpg"
+      image: "/images/awards/award1.png"
     },
     {
       id: 2,
@@ -67,7 +67,7 @@ export default function About() {
       fullDescription: "Global Management Excellence Awards ANNUAL 2024, CLP-DIRECT SELLING MOST TRUSTED KOREAN SKINCARE PRODUCTS PROVIDER (M SECRET) METRO CEBU, Given this 26th day of October 2025 at Metro Hotel Cebu by the Global Management Excellence Awards.",
       shortDescription: "Awarded for excellence in providing authentic Korean skincare products.",
       icon: <Star className="w-8 h-8" />,
-      image: "/images/awards/award3.jpg"
+      image: "/images/awards/award3.png"
     },
     {
       id: 4,
