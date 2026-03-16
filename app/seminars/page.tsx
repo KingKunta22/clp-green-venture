@@ -101,7 +101,8 @@ export default function Seminars() {
       level: "All Levels",
       color: "from-green-600 to-emerald-700",
       status: "past",
-      fee: "Free" // 👈 added
+      fee: "Free",
+      location: "CLP Office, City Suites, Ramos St., Cebu City"   // ✅ add this line
     },
     {
       id: 5,
@@ -113,7 +114,8 @@ export default function Seminars() {
       level: "Beginner",
       color: "from-green-700 to-emerald-800",
       status: "past",
-      fee: "Free" // 👈 added
+      fee: "Free",
+      location: "CLP Office, City Suites, Ramos St., Cebu City"   // ✅ add this line
     }
   ]
 
