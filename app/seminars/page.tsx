@@ -100,7 +100,8 @@ export default function Seminars() {
       instructor: "Charlie L. Patigue & Team",
       level: "All Levels",
       color: "from-green-600 to-emerald-700",
-      status: "past"
+      status: "past",
+      fee: "Free" // 👈 added
     },
     {
       id: 5,
@@ -111,7 +112,8 @@ export default function Seminars() {
       instructor: "Juvelyn Quirog",
       level: "Beginner",
       color: "from-green-700 to-emerald-800",
-      status: "past"
+      status: "past",
+      fee: "Free" // 👈 added
     }
   ]
 
