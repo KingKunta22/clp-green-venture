@@ -60,7 +60,7 @@ export default function OrgStructure() {
         name: 'Juvelyn Quirog',
         position: 'Branch Manager/Speaker',
         department: 'Operations',
-        email: 'maria.santos@clpgreenventure.com',
+        email: 'juvelynquirog@clpgreenventure.com',
         phone: '(032) 123-4568',
         responsibilities: ['Plantation Management', 'Production Operations', 'Quality Control'],
         years: '12+ years',
@@ -68,13 +68,13 @@ export default function OrgStructure() {
       },
       {
         id: 3,
-        name: 'Robert Lim',
-        position: 'Chief Financial Officer',
-        department: 'Finance',
-        email: 'robert.lim@clpgreenventure.com',
+        name: 'Jesaline Patigue',
+        position: 'Chief Operating Officer',
+        department: 'Operations',
+        email: 'jesalinepatigue@clpgreenventure.com',
         phone: '(032) 123-4569',
         responsibilities: ['Financial Planning', 'Budget Management', 'Investment Analysis'],
-        years: '10+ years',
+        years: '5+ years',
         image: '/images/org/cfo.jpg'
       }
     ],

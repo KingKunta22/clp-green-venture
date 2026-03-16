@@ -155,7 +155,7 @@ export default function Navbar() {
               
           {/* RIGHT: MESSAGE US BUTTON */}
           <a 
-            href="https://web.facebook.com/profile.php?id=61586268879623" 
+            href="https://www.facebook.com/profile.php?id=61573163535908" 
             target="_blank"
             rel="noopener noreferrer"
             className={`flex items-center gap-2 transition-all duration-300 ${
