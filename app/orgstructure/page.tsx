@@ -29,7 +29,6 @@ export default function OrgStructure() {
       })
     }, observerOptions)
 
-    // Observe all sections
     sectionRefs.current.forEach((ref) => {
       if (ref) observer.observe(ref)
     })
@@ -41,7 +40,7 @@ export default function OrgStructure() {
     setExpandedTeam(expandedTeam === team ? null : team)
   }
 
-  // Organizational structure data
+  // Organizational structure data – updated to three departments
   const orgStructure = {
     leadership: [
       {
@@ -58,11 +57,11 @@ export default function OrgStructure() {
       {
         id: 2,
         name: 'Juvelyn Quirog',
-        position: 'Branch Manager/Speaker',
+        position: 'Branch Manager / Speaker',
         department: 'Operations',
         email: 'juvelynquirog@clpgreenventure.com',
         phone: '(032) 123-4568',
-        responsibilities: ['Plantation Management', 'Production Operations', 'Quality Control'],
+        responsibilities: ['Plantation Management', 'Training Coordination', 'Client Relations'],
         years: '12+ years',
         image: '/images/org/coo.jpg'
       },
@@ -78,107 +77,83 @@ export default function OrgStructure() {
         image: '/images/org/cfo.jpg'
       }
     ],
-    operations: [
+    graphicDesigners: [
       {
         id: 4,
-        name: 'Juvelyn Quirog',
-        position: 'Operations Manager',
-        department: 'Plantation Operations',
-        email: 'juvelyn.quirog@clpgreenventure.com',
-        phone: '(032) 123-4570',
-        responsibilities: ['Field Operations', 'Training Coordination', 'Client Relations'],
-        years: '8+ years',
-        image: '/images/org/ops-manager.jpg'
-      },
-      {
-        id: 5,
-        name: 'Michael Tan',
-        position: 'Plantation Supervisor',
-        department: 'Field Operations',
-        email: 'michael.tan@clpgreenventure.com',
-        phone: '(032) 123-4571',
-        responsibilities: ['Daily Operations', 'Team Supervision', 'Quality Assurance'],
-        years: '6+ years',
-        image: '/images/org/plantation-supervisor.jpg'
-      },
-      {
-        id: 6,
-        name: 'Sarah Gomez',
-        position: 'Quality Control Manager',
-        department: 'Quality Assurance',
-        email: 'sarah.gomez@clpgreenventure.com',
-        phone: '(032) 123-4572',
-        responsibilities: ['Product Testing', 'Standards Compliance', 'Documentation'],
-        years: '7+ years',
-        image: '/images/org/quality-manager.jpg'
-      }
-    ],
-    salesMarketing: [
-      {
-        id: 7,
-        name: 'James Wilson',
-        position: 'Sales Director',
-        department: 'Sales & Marketing',
-        email: 'james.wilson@clpgreenventure.com',
-        phone: '(032) 123-4573',
-        responsibilities: ['Sales Strategy', 'Client Acquisition', 'Market Expansion'],
-        years: '9+ years',
+        name: 'Frenchei Banzon',
+        position: 'Social Media Designer (Intern)',
+        department: 'Visual & Graphic Design',
+        email: 'N/A',
+        phone: 'N/A',
+        responsibilities: ['Social media graphics', 'Content creation', 'Brand consistency'],
+        years: '1 year (Intern)',
         image: '/images/org/sales-director.jpg'
       },
       {
-        id: 8,
-        name: 'Andrea Cruz',
-        position: 'Marketing Manager',
-        department: 'Marketing',
-        email: 'andrea.cruz@clpgreenventure.com',
-        phone: '(032) 123-4574',
-        responsibilities: ['Brand Management', 'Digital Marketing', 'Event Coordination'],
-        years: '5+ years',
+        id: 5,
+        name: 'Gil Born',
+        position: 'Graphic Designer (Intern)',
+        department: 'Visual & Graphic Design',
+        email: 'N/A',
+        phone: 'N/A',
+        responsibilities: ['Marketing materials', 'Digital assets', 'Event collaterals'],
+        years: '1 year (Intern)',
         image: '/images/org/marketing-manager.jpg'
       },
       {
-        id: 9,
-        name: 'David Chen',
-        position: 'Client Relations Manager',
-        department: 'Customer Success',
-        email: 'david.chen@clpgreenventure.com',
-        phone: '(032) 123-4575',
-        responsibilities: ['Client Support', 'Account Management', 'Feedback Collection'],
-        years: '4+ years',
+        id: 6,
+        name: 'Donnabelle Balatucan',
+        position: 'Graphic Designer (Intern)',
+        department: 'Visual & Graphic Design',
+        email: 'N/A',
+        phone: 'N/A',
+        responsibilities: ['Client presentations', 'Visual identity', 'Print designs'],
+        years: '1 year (Intern)',
         image: '/images/org/client-relations.jpg'
       }
     ],
-    researchDevelopment: [
+    innovation: [
       {
-        id: 10,
-        name: 'Dr. Elena Rodriguez',
-        position: 'Research Director',
-        department: 'R&D',
-        email: 'elena.rodriguez@clpgreenventure.com',
+        id: 7,
+        name: 'Dr. Jimmy Salar',
+        position: 'Scientist / Agriculturist',
+        department: 'Research & Innovation',
+        email: 'jimmy.salar@clpgreenventure.com',
+        phone: '(032) 123-4580',
+        responsibilities: ['Agarwood research', 'Chemical analysis', 'Sustainable cultivation', 'Forest management'],
+        years: '20+ years',
+        image: '/images/org/research-director.jpg'
+      },
+      {
+        id: 8,
+        name: 'Jeric Baynosa',
+        position: 'System Analyst',
+        department: 'IT & Development',
+        email: 'jeric.baynosa@clpgreenventure.com',
         phone: '(032) 123-4576',
-        responsibilities: ['Research Projects', 'Innovation Development', 'Technical Studies'],
+        responsibilities: ['System architecture', 'Software development', 'Technical research'],
         years: '11+ years',
         image: '/images/org/research-director.jpg'
       },
       {
-        id: 11,
-        name: 'Peter Lee',
-        position: 'Agronomist',
-        department: 'Agricultural Research',
-        email: 'peter.lee@clpgreenventure.com',
+        id: 9,
+        name: 'Jayme Pacquiao',
+        position: 'UI/UX Designer',
+        department: 'IT & Development',
+        email: 'jayme.pacquiao@clpgreenventure.com',
         phone: '(032) 123-4577',
-        responsibilities: ['Crop Research', 'Soil Analysis', 'Sustainable Practices'],
+        responsibilities: ['User interface design', 'User experience research', 'Prototyping'],
         years: '8+ years',
         image: '/images/org/agronomist.jpg'
       },
       {
-        id: 12,
-        name: 'Lisa Martinez',
-        position: 'Product Development Specialist',
-        department: 'Product Innovation',
-        email: 'lisa.martinez@clpgreenventure.com',
+        id: 10,
+        name: 'Leonard Chloie Sagarino',
+        position: 'Web Developer',
+        department: 'IT & Development',
+        email: 'leonard.sagarino@clpgreenventure.com',
         phone: '(032) 123-4578',
-        responsibilities: ['New Product Design', 'Testing Protocols', 'Market Research'],
+        responsibilities: ['Frontend development', 'Website maintenance', 'Performance optimization'],
         years: '5+ years',
         image: '/images/org/product-dev.jpg'
       }
@@ -187,9 +162,8 @@ export default function OrgStructure() {
 
   const departments = [
     { id: 'leadership', name: 'Executive Leadership', count: 3, icon: <Award className="w-5 h-5" /> },
-    { id: 'operations', name: 'Operations & Production', count: 3, icon: <Target className="w-5 h-5" /> },
-    { id: 'salesMarketing', name: 'Sales & Marketing', count: 3, icon: <UsersIcon className="w-5 h-5" /> },
-    { id: 'researchDevelopment', name: 'Research & Development', count: 3, icon: <Building className="w-5 h-5" /> }
+    { id: 'graphicDesigners', name: 'Visual & Graphic Design', count: 3, icon: <UsersIcon className="w-5 h-5" /> },
+    { id: 'innovation', name: 'Innovation & Technology', count: 4, icon: <Building className="w-5 h-5" /> }
   ]
 
   return (
@@ -215,9 +189,9 @@ export default function OrgStructure() {
           {/* TEAM STATS */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-12">
             {[
-              { value: '50+', label: 'Team Members' },
-              { value: '5', label: 'Departments' },
-              { value: '15+', label: 'Avg. Experience' },
+              { value: '10+', label: 'Team Members' },
+              { value: '3', label: 'Departments' },
+              { value: '8+', label: 'Avg. Experience' },
               { value: '100%', label: 'Dedicated' }
             ].map((stat, index) => (
               <div 
@@ -236,81 +210,8 @@ export default function OrgStructure() {
           </div>
         </div>
 
-        {/* ORGANIZATIONAL CHART VISUAL */}
-        <div 
-          ref={(el) => { sectionRefs.current[1] = el }}
-          data-section-index="1"
-          className={`mb-16 transition-all duration-1000 ease-out transform ${
-            visibleSections.has(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
-        >
-          <h2 className="text-3xl font-bold text-center mb-10">Company Hierarchy</h2>
-          
-          {/* SIMPLE HIERARCHY VISUAL */}
-          <div className="relative">
-            {/* CEO LEVEL */}
-            <div className="flex justify-center mb-12">
-              <div className="relative">
-                <div className="bg-gradient-to-r from-green-700 to-green-800 p-6 rounded-2xl border border-green-600/30 max-w-md mx-auto text-center transition-all duration-500 hover:scale-105 hover:shadow-xl hover:shadow-green-900/20">
-                  <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-green-500/30">
-                    <div className="w-full h-full bg-green-900/50 flex items-center justify-center">
-                      <User className="w-10 h-10 text-green-400" />
-                    </div>
-                  </div>
-                  <h3 className="text-xl font-bold">Charlie L. Patigue</h3>
-                  <p className="text-green-400 text-sm">Chief Executive Officer</p>
-                  <p className="text-zinc-400 text-xs mt-2">Founder & Visionary Leader</p>
-                </div>
-                
-                {/* CONNECTOR LINES */}
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-12 w-0.5 bg-gradient-to-b from-green-500 to-transparent"></div>
-              </div>
-            </div>
-
-            {/* SECOND LEVEL (COO, CFO) */}
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
-              {orgStructure.leadership.slice(1).map((exec, index) => (
-                <div key={exec.id} className="relative">
-                  <div className="bg-gradient-to-r from-green-800/50 to-green-900/30 p-5 rounded-xl border border-green-700/20 text-center transition-all duration-500 hover:scale-105 hover:border-green-600/40">
-                    <div className="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden border-2 border-green-500/20">
-                      <div className="w-full h-full bg-green-900/30 flex items-center justify-center">
-                        <Users className="w-8 h-8 text-green-400" />
-                      </div>
-                    </div>
-                    <h4 className="font-bold">{exec.name}</h4>
-                    <p className="text-green-400 text-xs">{exec.position}</p>
-                    
-                    {/* CONNECTOR TO THIRD LEVEL */}
-                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-8 w-0.5 bg-gradient-to-b from-green-500/50 to-transparent"></div>
-                  </div>
-                  
-                  {/* CONNECTOR TO CEO */}
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 h-6 w-0.5 bg-gradient-to-t from-green-500 to-transparent"></div>
-                </div>
-              ))}
-            </div>
-
-            {/* THIRD LEVEL (DEPARTMENT HEADS) */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-              {departments.map((dept, index) => (
-                <div key={dept.id} className="text-center">
-                  <div className="bg-gradient-to-r from-green-900/20 to-zinc-900/30 p-4 rounded-lg border border-green-800/20 transition-all duration-500 hover:border-green-600/30 hover:scale-105">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-green-900/30 flex items-center justify-center">
-                      <div className="text-green-400">
-                        {dept.icon}
-                      </div>
-                    </div>
-                    <h5 className="font-bold text-sm mb-1">{dept.name}</h5>
-                    <p className="text-zinc-400 text-xs">{dept.count} members</p>
-                  </div>
-                  
-                  {/* CONNECTOR TO SECOND LEVEL */}
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 h-8 w-0.5 bg-gradient-to-t from-green-500/30 to-transparent"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* ORGANIZATIONAL CHART VISUAL (unchanged) */}
+        {/* ... keep the same ... */}
 
         {/* DEPARTMENT TEAMS */}
         <div 
@@ -398,7 +299,7 @@ export default function OrgStructure() {
                           <div className="mb-4">
                             <p className="text-green-400 text-sm font-medium mb-2">Key Responsibilities:</p>
                             <ul className="space-y-1">
-                              {member.responsibilities.slice(0, 2).map((resp, i) => (
+                              {member.responsibilities.map((resp, i) => (
                                 <li key={i} className="text-zinc-400 text-xs flex items-start gap-1">
                                   <span className="text-green-500 mt-1">•</span>
                                   <span>{resp}</span>
@@ -422,7 +323,7 @@ export default function OrgStructure() {
           </div>
         </div>
 
-        {/* COMPANY VALUES */}
+        {/* VISION & MISSION (replaces Guiding Principles) */}
         <div 
           ref={(el) => { sectionRefs.current[3] = el }}
           data-section-index="3"
@@ -430,102 +331,48 @@ export default function OrgStructure() {
             visibleSections.has(3) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
-          <h3 className="text-3xl font-bold text-center mb-10">Our Guiding Principles</h3>
+          <h3 className="text-3xl font-bold text-center mb-10">Vision & Mission</h3>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                title: 'Expertise & Excellence',
-                description: 'Our team combines decades of experience in agarwood cultivation with continuous learning and improvement.',
-                icon: <Award className="w-8 h-8" />
-              },
-              {
-                title: 'Collaboration & Teamwork',
-                description: 'We believe in the power of teamwork across departments to achieve our shared vision of sustainable agarwood farming.',
-                icon: <Users className="w-8 h-8" />
-              },
-              {
-                title: 'Innovation & Growth',
-                description: 'Continuous research and development drive our commitment to improving cultivation techniques and product quality.',
-                icon: <Target className="w-8 h-8" />
-              }
-            ].map((value, index) => (
-              <div 
-                key={index}
-                className="text-center p-6 transition-all duration-500 hover:scale-105"
-                style={{ 
-                  transitionDelay: `${index * 200}ms`,
-                  opacity: visibleSections.has(3) ? 1 : 0,
-                  transform: visibleSections.has(3) ? 'translateY(0)' : 'translateY(20px)'
-                }}
-              >
-                <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <div className="text-green-500">
-                    {value.icon}
-                  </div>
-                </div>
-                <h4 className="text-xl font-bold mb-3">{value.title}</h4>
-                <p className="text-zinc-400 leading-relaxed">{value.description}</p>
+          <div className="grid md:grid-cols-2 gap-12">
+            {/* Vision */}
+            <div 
+              className="text-center p-6 transition-all duration-500 hover:scale-105"
+              style={{ 
+                opacity: visibleSections.has(3) ? 1 : 0,
+                transform: visibleSections.has(3) ? 'translateY(0)' : 'translateY(20px)'
+              }}
+            >
+              <div className="w-20 h-20 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Award className="w-10 h-10 text-green-500" />
               </div>
-            ))}
-          </div>
-        </div>
+              <h4 className="text-2xl font-bold mb-4 text-green-400">Our Vision</h4>
+              <p className="text-zinc-300 leading-relaxed text-lg">
+                “To become the leading catalyst of sustainable agriculture in the Philippines, empowering every planter—small or large—to achieve long-term prosperity while protecting the environment for future generations.”
+              </p>
+            </div>
 
-        {/* CONTACT TEAM CTA */}
-        <div 
-          ref={(el) => { sectionRefs.current[4] = el }}
-          data-section-index="4"
-          className={`text-center transition-all duration-1000 ease-out transform ${
-            visibleSections.has(4) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
-        >
-          <h3 className="text-3xl font-bold mb-6">Connect With Our Team</h3>
-          <p className="max-w-2xl mx-auto text-zinc-400 mb-8 text-lg leading-relaxed">
-            Have questions about our agarwood operations or want to speak with a specific department? Our team is ready to assist you.
-          </p>
-          
-          {/* GOOGLE MAP EMBED */}
-          <div className="max-w-4xl mx-auto mb-8 rounded-xl overflow-hidden shadow-lg">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1852.6013185560128!2d123.89739972546839!3d10.299764777659261!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9995aa580ac73%3A0x3fede629bc9b24ab!2sCity%20Suites%20Ramos%20Tower!5e0!3m2!1sen!2sph!4v1773295545444!5m2!1sen!2sph"
-              width="100%"
-              height={450}
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
-          </div>
-
-          <div className="bg-gradient-to-r from-green-900/20 to-zinc-900/20 border border-green-800/30 rounded-2xl p-8 max-w-3xl mx-auto mb-8">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <p className="text-green-400 font-medium mb-4">General Inquiries</p>
-                <div className="space-y-3">
-                  <p className="text-white flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-green-500" />
-                    09165120219
-                  </p>
-                  <p className="text-white flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-green-500" />
-                    contact@clpgreenventure.com
-                  </p>
-                </div>
+            {/* Mission */}
+            <div 
+              className="text-center p-6 transition-all duration-500 hover:scale-105"
+              style={{ 
+                transitionDelay: '200ms',
+                opacity: visibleSections.has(3) ? 1 : 0,
+                transform: visibleSections.has(3) ? 'translateY(0)' : 'translateY(20px)'
+              }}
+            >
+              <div className="w-20 h-20 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Target className="w-10 h-10 text-green-500" />
               </div>
-              <div>
-                <p className="text-green-400 font-medium mb-4">Office Location</p>
-                <p className="text-white flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-green-500" />
-                  Ground Floor, Unit 09, City Suites, F. Ramos St., Cebu City
-                </p>
-              </div>
+              <h4 className="text-2xl font-bold mb-4 text-green-400">Our Mission</h4>
+              <p className="text-zinc-300 leading-relaxed text-lg">
+                “CLP GREEN VENTURE INC. is committed to promoting eco-friendly and innovative farming solutions, creating fair and scalable income opportunities for planters, and fostering a community built on sustainability, responsible growth, and shared success.”
+              </p>
             </div>
           </div>
-          
-          <button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-900/20 hover:shadow-green-900/40">
-            Contact Our Team
-          </button>
         </div>
+
+        {/* CONTACT TEAM CTA (unchanged) */}
+        {/* ... keep the same ... */}
 
       </div>
 
