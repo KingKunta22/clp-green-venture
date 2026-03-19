@@ -1,9 +1,13 @@
+// app/admin/dashboard/seminars/actions.ts
 'use server'
 
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 
+console.log('[actions.ts] DATABASE_URL:', process.env.DATABASE_URL)
+
 export async function getSeminars() {
+  console.log('[getSeminars] DATABASE_URL:', process.env.DATABASE_URL)
   return await prisma.seminar.findMany({
     orderBy: { createdAt: 'desc' }
   })
