@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Seminar {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  schedule    String   // e.g., "Mon, Wed, Fri 3:00 PM" or specific date
+  fee         String   // "Free" or "₱250"
+  instructor  String
+  level       String
+  location    String
+  isPast      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  registrations Registration[]
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  url       String   // cloud storage URL (we'll use public folder for now, but later move to Supabase storage)
+  tag       String   // one of the tags
+  createdAt DateTime @default(now())
+
+  @@index([tag])
+}
+
+model Registration {
+  id            String   @id @default(cuid())
+  firstName     String
+  lastName      String
+  address       String
+  phone         String
+  participants  Int
+  fee           Float
+  paymentMethod String   // "GCash", "Maya", "walk-in"
+  code          String   @unique
+  verified      Boolean  @default(false)
+  seminarId     String
+  seminar       Seminar  @relation(fields: [seminarId], references: [id])
+  createdAt     DateTime @default(now())
+}
