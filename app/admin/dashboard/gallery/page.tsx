@@ -8,9 +8,7 @@ interface GalleryImage {
   tag: string;
 }
 
-const tags = ['Milestones', 'Community', 'Plantation', 'Products', 'Registered Agents', 'Seminars'];
-
-export default function GalleryManager() {
+export default function GalleryPage() {
   const [images, setImages] = useState<GalleryImage[]>([
     { id: 1, url: '/images/gallery/milestones/1.jpg', tag: 'Milestones' },
     { id: 2, url: '/images/gallery/community/1.jpg', tag: 'Community' },
@@ -28,8 +26,8 @@ export default function GalleryManager() {
 
   return (
     <div>
+      <h1 className="text-2xl font-bold mb-6">Manage Gallery</h1>
       <div className="flex justify-between mb-4">
-        <h2 className="text-xl">Gallery</h2>
         <button onClick={handleUpload} className="bg-green-600 px-4 py-2 rounded">Upload Image</button>
       </div>
       <div className="grid grid-cols-4 gap-4">

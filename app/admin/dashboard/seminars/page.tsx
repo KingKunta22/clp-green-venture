@@ -9,7 +9,7 @@ interface Seminar {
   fee: string;
 }
 
-export default function SeminarsManager() {
+export default function SeminarsPage() {
   const [seminars, setSeminars] = useState<Seminar[]>([
     { id: 1, title: 'Basic Agarwood Cultivation', schedule: 'Mon, Wed, Fri 3:00 PM', fee: 'Free' },
     { id: 2, title: 'Scientific Forum on Growing Agarwood', schedule: 'Mar 28, 2026 10:00 AM', fee: '₱250' },
@@ -23,8 +23,8 @@ export default function SeminarsManager() {
 
   return (
     <div>
+      <h1 className="text-2xl font-bold mb-6">Manage Seminars</h1>
       <div className="flex justify-between mb-4">
-        <h2 className="text-xl">Seminars</h2>
         <button className="bg-green-600 px-4 py-2 rounded">Add New Seminar</button>
       </div>
       <table className="w-full bg-gray-800 rounded">

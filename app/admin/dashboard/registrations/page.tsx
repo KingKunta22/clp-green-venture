@@ -12,7 +12,7 @@ interface Registration {
   code: string;
 }
 
-export default function RegistrationsManager() {
+export default function RegistrationsPage() {
   const [registrations, setRegistrations] = useState<Registration[]>([
     { id: 1, name: 'John Doe', seminar: 'Basic Agarwood Cultivation', participants: 2, fee: 0, verified: false, code: 'CLP-A1B2-C3D4' },
     { id: 2, name: 'Jane Smith', seminar: 'Scientific Forum', participants: 1, fee: 250, verified: true, code: 'CLP-E5F6-G7H8' },
@@ -43,8 +43,8 @@ export default function RegistrationsManager() {
 
   return (
     <div>
+      <h1 className="text-2xl font-bold mb-6">Manage Registrations</h1>
       <div className="flex justify-between mb-4">
-        <h2 className="text-xl">Registrations</h2>
         <div className="flex gap-2">
           <select
             value={filter}
