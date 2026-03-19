@@ -10,15 +10,12 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // Get admin credentials from environment variables
         const adminUsername = process.env.ADMIN_USERNAME;
         const adminPassword = process.env.ADMIN_PASSWORD;
-
         if (
           credentials?.username === adminUsername &&
           credentials?.password === adminPassword
         ) {
-          // Return a user object (what gets stored in the session)
           return { id: "1", name: adminUsername };
         }
         return null;
@@ -27,7 +24,7 @@ const handler = NextAuth({
   ],
   session: { strategy: "jwt" },
   pages: {
-    signIn: "/admin/login", // Custom login page
+    signIn: "/login", // <-- add this line
   },
   callbacks: {
     async jwt({ token, user }) {

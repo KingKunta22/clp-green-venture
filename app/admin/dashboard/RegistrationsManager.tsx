@@ -12,20 +12,17 @@ interface Registration {
   code: string;
 }
 
-const mockRegistrations: Registration[] = [
-  { id: 1, name: 'John Doe', seminar: 'Basic Agarwood Cultivation', participants: 2, fee: 0, verified: false, code: 'CLP-A1B2-C3D4' },
-  { id: 2, name: 'Jane Smith', seminar: 'Scientific Forum', participants: 1, fee: 250, verified: true, code: 'CLP-E5F6-G7H8' },
-];
-
 export default function RegistrationsManager() {
-  const [registrations, setRegistrations] = useState<Registration[]>(mockRegistrations);
+  const [registrations, setRegistrations] = useState<Registration[]>([
+    { id: 1, name: 'John Doe', seminar: 'Basic Agarwood Cultivation', participants: 2, fee: 0, verified: false, code: 'CLP-A1B2-C3D4' },
+    { id: 2, name: 'Jane Smith', seminar: 'Scientific Forum', participants: 1, fee: 250, verified: true, code: 'CLP-E5F6-G7H8' },
+  ]);
   const [filter, setFilter] = useState<'all' | 'verified' | 'unverified'>('all');
 
   const toggleVerify = (id: number) => {
     setRegistrations(regs =>
       regs.map(r => r.id === id ? { ...r, verified: !r.verified } : r)
     );
-    // TODO: call server action to update DB
   };
 
   const exportCSV = () => {
@@ -51,8 +48,8 @@ export default function RegistrationsManager() {
         <div className="flex gap-2">
           <select
             value={filter}
-            onChange={(e) => setFilter(e.target.value as 'all' | 'verified' | 'unverified')}
-            className="bg-gray-800 p-2 rounded"
+            onChange={(e) => setFilter(e.target.value as typeof filter)}
+            className="bg-gray-800 p-2 rounded text-white"
           >
             <option value="all">All</option>
             <option value="verified">Verified</option>

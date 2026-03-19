@@ -1,14 +1,15 @@
+// app/admin/AdminSidebar.tsx
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { signOut } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import { LayoutDashboard, Calendar, Image, Users, LogOut } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import { Suspense } from 'react';
 
-export default function AdminSidebar() {
-  const pathname = usePathname();
+function SidebarContent({ pathname }: { pathname: string }) {
   const searchParams = useSearchParams();
-  const currentTab = searchParams.get('tab') || 'seminars';
+  const currentTab = searchParams.get('tab');
 
   const navItems = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard, tab: null },
@@ -19,15 +20,18 @@ export default function AdminSidebar() {
 
   const isActive = (item: typeof navItems[0]) => {
     if (item.tab === null) {
-      return pathname === item.href && !searchParams.get('tab');
+      // Dashboard active only when on /admin/dashboard and no tab param
+      return pathname === '/admin/dashboard' && !currentTab;
+    } else {
+      // Others active when tab matches
+      return currentTab === item.tab;
     }
-    return pathname === '/admin/dashboard' && currentTab === item.tab;
   };
 
   return (
-    <aside className="w-64 bg-gray-800 p-4">
+    <aside className="w-64 bg-gray-800 p-4 flex flex-col">
       <div className="text-xl font-bold mb-6">CLP Admin</div>
-      <nav className="space-y-2">
+      <nav className="space-y-2 flex-1">
         {navItems.map((item) => (
           <Link
             key={item.name}
@@ -42,11 +46,19 @@ export default function AdminSidebar() {
         ))}
       </nav>
       <button
-        onClick={() => signOut({ callbackUrl: '/admin/login' })}
-        className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-700 w-full mt-6"
+        onClick={() => signOut({ callbackUrl: '/login' })}
+        className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-700 w-full mt-auto"
       >
         <LogOut size={20} /> Logout
       </button>
     </aside>
+  );
+}
+
+export default function AdminSidebar({ pathname }: { pathname: string }) {
+  return (
+    <Suspense fallback={<div className="w-64 bg-gray-800 p-4">Loading...</div>}>
+      <SidebarContent pathname={pathname} />
+    </Suspense>
   );
 }

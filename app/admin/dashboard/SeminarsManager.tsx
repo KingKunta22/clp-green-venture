@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 
-// Mock data – replace with actual database calls
 interface Seminar {
   id: number;
   title: string;
@@ -10,19 +9,15 @@ interface Seminar {
   fee: string;
 }
 
-const mockSeminars: Seminar[] = [
-  { id: 1, title: 'Basic Agarwood Cultivation', schedule: 'Mon, Wed, Fri 3:00 PM', fee: 'Free' },
-  { id: 2, title: 'Scientific Forum on Growing Agarwood', schedule: 'Mar 28, 2026 10:00 AM', fee: '₱250' },
-];
-
 export default function SeminarsManager() {
-  const [seminars, setSeminars] = useState<Seminar[]>(mockSeminars);
-  const [editing, setEditing] = useState<Seminar | null>(null);
+  const [seminars, setSeminars] = useState<Seminar[]>([
+    { id: 1, title: 'Basic Agarwood Cultivation', schedule: 'Mon, Wed, Fri 3:00 PM', fee: 'Free' },
+    { id: 2, title: 'Scientific Forum on Growing Agarwood', schedule: 'Mar 28, 2026 10:00 AM', fee: '₱250' },
+  ]);
 
   const handleDelete = (id: number) => {
     if (confirm('Delete this seminar?')) {
       setSeminars(seminars.filter(s => s.id !== id));
-      // TODO: call server action to delete
     }
   };
 
@@ -55,7 +50,6 @@ export default function SeminarsManager() {
           ))}
         </tbody>
       </table>
-      {/* Add/Edit form would go here – we'll add later */}
     </div>
   );
 }

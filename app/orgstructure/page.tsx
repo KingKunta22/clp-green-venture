@@ -120,7 +120,7 @@ export default function OrgStructure() {
         department: 'Research & Innovation',
         email: 'jimmy.salar@clpgreenventure.com',
         phone: '(032) 123-4580',
-        responsibilities: ['Agarwood research', 'Chemical analysis', 'Sustainable cultivation', 'Forest management'],
+        responsibilities: ['Agarwood research', 'Chemical analysis', 'Forest management'],
         years: '20+ years',
         image: '/images/org/research-director.jpg'
       },
@@ -132,7 +132,7 @@ export default function OrgStructure() {
         email: 'jeric.baynosa@clpgreenventure.com',
         phone: '(032) 123-4576',
         responsibilities: ['System architecture', 'Software development', 'Technical research'],
-        years: '11+ years',
+        years: '2+ years',
         image: '/images/org/research-director.jpg'
       },
       {
@@ -143,18 +143,40 @@ export default function OrgStructure() {
         email: 'jayme.pacquiao@clpgreenventure.com',
         phone: '(032) 123-4577',
         responsibilities: ['User interface design', 'User experience research', 'Prototyping'],
-        years: '8+ years',
+        years: '2+ years',
         image: '/images/org/agronomist.jpg'
       },
       {
         id: 10,
         name: 'Leonard Chloie Sagarino',
-        position: 'Web Developer',
+        position: 'Backend Developer',
         department: 'IT & Development',
         email: 'leonard.sagarino@clpgreenventure.com',
         phone: '(032) 123-4578',
+        responsibilities: ['Fullstack development', 'Website maintenance', 'Performance optimization'],
+        years: '2+ years',
+        image: '/images/org/product-dev.jpg'
+      },
+      {
+        id: 11,
+        name: 'John Mark Abastillas',
+        position: 'Frontend Developer',
+        department: 'IT & Development',
+        email: 'johnmarkabastillasn@gmail.com',
+        phone: '(032) 123-4578',
         responsibilities: ['Frontend development', 'Website maintenance', 'Performance optimization'],
-        years: '5+ years',
+        years: '2+ years',
+        image: '/images/org/product-dev.jpg'
+      },
+      {
+        id: 12,
+        name: 'John Mark Gill Paghubasan',
+        position: 'Fullstack Developer',
+        department: 'IT & Development',
+        email: 'jmgillpaghubasan@gmail.com',
+        phone: '(032) 123-4578',
+        responsibilities: ['Backend development', 'Website maintenance', 'Performance optimization'],
+        years: '2+ years',
         image: '/images/org/product-dev.jpg'
       }
     ]
@@ -163,7 +185,7 @@ export default function OrgStructure() {
   const departments = [
     { id: 'leadership', name: 'Executive Leadership', count: 3, icon: <Award className="w-5 h-5" /> },
     { id: 'graphicDesigners', name: 'Visual & Graphic Design', count: 3, icon: <UsersIcon className="w-5 h-5" /> },
-    { id: 'innovation', name: 'Innovation & Technology', count: 4, icon: <Building className="w-5 h-5" /> }
+    { id: 'innovation', name: 'Innovation & Technology', count: 6, icon: <Building className="w-5 h-5" /> }
   ]
 
   return (
