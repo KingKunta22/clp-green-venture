@@ -195,75 +195,7 @@ export default function Gallery() {
           <p className="text-zinc-400 text-lg max-w-3xl mx-auto mb-8 leading-relaxed">
             Explore our journey through sustainable agarwood cultivation, from plantation to premium products
           </p>
-          
-          {/* Admin Upload Button - Will be visible to admins only in future */}
-          <button
-            onClick={() => setShowUploadModal(true)}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 mb-8"
-          >
-            <Upload className="w-5 h-5" />
-            Upload Image
-          </button>
         </div>
-
-        {/* UPLOAD MODAL (Placeholder for future admin implementation) */}
-        {showUploadModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowUploadModal(false)} />
-            
-            <div className="relative bg-[#0f130e] border border-green-800/30 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-scale-in">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold">Upload New Image</h3>
-                <button onClick={() => setShowUploadModal(false)} className="p-2 hover:bg-zinc-800 rounded-full">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <form onSubmit={handleUpload} className="space-y-4">
-                <div>
-                  <label className="block text-sm text-zinc-400 mb-2">Image File</label>
-                  <div className="border-2 border-dashed border-green-800/30 rounded-lg p-8 text-center hover:border-green-600/50 transition-colors cursor-pointer">
-                    <input type="file" accept="image/*" className="hidden" id="image-upload" />
-                    <label htmlFor="image-upload" className="cursor-pointer">
-                      <Plus className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                      <p className="text-zinc-400">Click to select image</p>
-                      <p className="text-xs text-zinc-600 mt-1">JPG, PNG, GIF up to 10MB</p>
-                    </label>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm text-zinc-400 mb-2">Image Tag</label>
-                  <select className="w-full p-3 bg-zinc-900/50 border border-green-800/30 rounded-lg text-white">
-                    {tags.filter(t => t !== 'All').map(tag => (
-                      <option key={tag} value={tag}>{tag}</option>
-                    ))}
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm text-zinc-400 mb-2">Description (Alt Text)</label>
-                  <input 
-                    type="text" 
-                    placeholder="Enter image description"
-                    className="w-full p-3 bg-zinc-900/50 border border-green-800/30 rounded-lg text-white"
-                  />
-                </div>
-                
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300"
-                >
-                  Upload Image
-                </button>
-              </form>
-              
-              <p className="text-xs text-zinc-600 text-center mt-4">
-                Note: Admin authentication will be required in future updates
-              </p>
-            </div>
-          </div>
-        )}
 
         {/* TAG FILTERS */}
         <div 

@@ -1,32 +1,58 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getRegistrations, toggleVerification } from './actions';
 
 interface Registration {
-  id: number;
+  id: string;
   name: string;
   seminar: string;
   participants: number;
   fee: number;
-  verified: boolean;
+  paymentMethod: string;
   code: string;
+  verified: boolean;
+  createdAt: string;
 }
 
 export default function RegistrationsPage() {
-  const [registrations, setRegistrations] = useState<Registration[]>([
-    { id: 1, name: 'John Doe', seminar: 'Basic Agarwood Cultivation', participants: 2, fee: 0, verified: false, code: 'CLP-A1B2-C3D4' },
-    { id: 2, name: 'Jane Smith', seminar: 'Scientific Forum', participants: 1, fee: 250, verified: true, code: 'CLP-E5F6-G7H8' },
-  ]);
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [filter, setFilter] = useState<'all' | 'verified' | 'unverified'>('all');
+  const [loading, setLoading] = useState(true);
 
-  const toggleVerify = (id: number) => {
-    setRegistrations(regs =>
-      regs.map(r => r.id === id ? { ...r, verified: !r.verified } : r)
+  useEffect(() => {
+    loadRegistrations();
+  }, []);
+
+  const loadRegistrations = async () => {
+    setLoading(true);
+    const data = await getRegistrations();
+    setRegistrations(data);
+    setLoading(false);
+  };
+
+  const handleToggleVerify = async (id: string, currentVerified: boolean) => {
+    await toggleVerification(id, !currentVerified);
+    // Update local state for immediate feedback
+    setRegistrations(prev =>
+      prev.map(r => (r.id === id ? { ...r, verified: !currentVerified } : r))
     );
   };
 
   const exportCSV = () => {
-    const csv = registrations.map(r => `${r.name},${r.seminar},${r.participants},${r.fee},${r.verified},${r.code}`).join('\n');
+    const filtered = getFiltered();
+    const csv = filtered.map(r =>
+      [
+        r.name,
+        r.seminar,
+        r.participants,
+        r.fee,
+        r.paymentMethod,
+        r.verified ? 'Verified' : 'Unverified',
+        r.code,
+        new Date(r.createdAt).toLocaleString(),
+      ].join(',')
+    ).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -35,11 +61,17 @@ export default function RegistrationsPage() {
     a.click();
   };
 
-  const filtered = registrations.filter(r => {
-    if (filter === 'verified') return r.verified;
-    if (filter === 'unverified') return !r.verified;
-    return true;
-  });
+  const getFiltered = () => {
+    if (filter === 'verified') return registrations.filter(r => r.verified);
+    if (filter === 'unverified') return registrations.filter(r => !r.verified);
+    return registrations;
+  };
+
+  const filtered = getFiltered();
+
+  if (loading) {
+    return <div className="text-white p-6 text-center">Loading registrations...</div>;
+  }
 
   return (
     <div>
@@ -55,42 +87,56 @@ export default function RegistrationsPage() {
             <option value="verified">Verified</option>
             <option value="unverified">Unverified</option>
           </select>
-          <button onClick={exportCSV} className="bg-green-600 px-4 py-2 rounded">Export CSV</button>
+          <button
+            onClick={exportCSV}
+            className="bg-green-600 px-4 py-2 rounded hover:bg-green-700"
+          >
+            Export CSV
+          </button>
         </div>
       </div>
-      <table className="w-full bg-gray-800 rounded">
-        <thead>
-          <tr className="border-b border-gray-700">
-            <th className="p-2 text-left">Name</th>
-            <th className="p-2 text-left">Seminar</th>
-            <th className="p-2 text-left">Participants</th>
-            <th className="p-2 text-left">Fee</th>
-            <th className="p-2 text-left">Code</th>
-            <th className="p-2 text-left">Verified</th>
-            <th className="p-2">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map(r => (
-            <tr key={r.id} className="border-b border-gray-700">
-              <td className="p-2">{r.name}</td>
-              <td className="p-2">{r.seminar}</td>
-              <td className="p-2">{r.participants}</td>
-              <td className="p-2">₱{r.fee}</td>
-              <td className="p-2">{r.code}</td>
-              <td className="p-2">{r.verified ? '✅' : '❌'}</td>
-              <td className="p-2">
-                <button
-                  onClick={() => toggleVerify(r.id)}
-                  className={`px-3 py-1 rounded ${r.verified ? 'bg-yellow-600' : 'bg-green-600'}`}
-                >
-                  {r.verified ? 'Unverify' : 'Verify'}
-                </button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="w-full bg-gray-800 rounded">
+          <thead>
+            <tr className="border-b border-gray-700">
+              <th className="p-2 text-left">Name</th>
+              <th className="p-2 text-left">Seminar</th>
+              <th className="p-2 text-left">Participants</th>
+              <th className="p-2 text-left">Fee</th>
+              <th className="p-2 text-left">Payment</th>
+              <th className="p-2 text-left">Code</th>
+              <th className="p-2 text-left">Verified</th>
+              <th className="p-2">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filtered.map((r) => (
+              <tr key={r.id} className="border-b border-gray-700">
+                <td className="p-2">{r.name}</td>
+                <td className="p-2">{r.seminar || 'Unknown Seminar'}</td>
+                <td className="p-2">{r.participants}</td>
+                <td className="p-2">₱{r.fee}</td>
+                <td className="p-2">{r.paymentMethod}</td>
+                <td className="p-2 font-mono text-sm">{r.code}</td>
+                <td className="p-2">{r.verified ? '✅' : '❌'}</td>
+                <td className="p-2">
+                  <button
+                    onClick={() => handleToggleVerify(r.id, r.verified)}
+                    className={`px-3 py-1 rounded ${
+                      r.verified ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-600 hover:bg-green-700'
+                    }`}
+                  >
+                    {r.verified ? 'Unverify' : 'Verify'}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {filtered.length === 0 && (
+        <p className="text-center text-gray-400 mt-4">No registrations found.</p>
+      )}
     </div>
   );
 }

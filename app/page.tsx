@@ -2,12 +2,15 @@ import Navbar from "./components/Navbar"
 import Hero from "./components/Hero"
 import About from "./about/page"
 import Products from "./products/page"
-import Seminars from "./seminars/page"
+import { getSeminars } from "./seminars/actions"
+import SeminarsClient from "./seminars/SeminarsClient"
 import Gallery from "./gallery/page"
 import Orgstructure from "./orgstructure/page"
 import Footer from "./components/Footer"
 
-export default function Home() {
+export default async function Home() {
+  const seminars = await getSeminars()
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -25,7 +28,7 @@ export default function Home() {
       </section>
 
       <section id="seminars">
-        <Seminars />
+        <SeminarsClient initialSeminars={seminars} />
       </section>
 
       <section id="gallery">

@@ -10,15 +10,15 @@ model Seminar {
   id          String   @id @default(cuid())
   title       String
   description String?
-  schedule    String   // e.g., "Mon, Wed, Fri 3:00 PM" or specific date
-  fee         String   // "Free" or "₱250"
+  schedule    String
+  fee         String
   instructor  String
   level       String
   location    String
   isPast      Boolean  @default(false)
+  imageUrl    String?  // Add this line
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
   registrations Registration[]
 }
 
