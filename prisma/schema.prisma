@@ -26,6 +26,7 @@ model GalleryImage {
   id        String   @id @default(cuid())
   url       String   // cloud storage URL (we'll use public folder for now, but later move to Supabase storage)
   tag       String   // one of the tags
+  alt       String?
   createdAt DateTime @default(now())
 
   @@index([tag])
