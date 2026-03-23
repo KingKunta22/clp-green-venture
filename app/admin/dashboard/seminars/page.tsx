@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 // app/admin/dashboard/seminars/page.tsx
 import { getSeminars } from './actions'
 import SeminarsClient from './SeminarsClient'
