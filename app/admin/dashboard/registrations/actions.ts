@@ -3,7 +3,37 @@
 import { query } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
-export async function getRegistrations() {
+// Shared type for registration data
+export interface Registration {
+  id: string;
+  name: string;
+  seminar: string;
+  participants: number;
+  fee: number;
+  paymentMethod: string;
+  code: string;
+  verified: boolean;
+  createdAt: string;
+}
+
+// Shape of the raw database row
+type RegistrationRow = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  phone: string;
+  participants: number;
+  fee: number;
+  paymentMethod: string;
+  code: string;
+  verified: boolean;
+  createdAt: Date;
+  seminar_title: string;
+  seminar_id: string;
+};
+
+export async function getRegistrations(): Promise<Registration[]> {
   try {
     const result = await query(`
       SELECT r.id, r."firstName", r."lastName", r.address, r.phone, r.participants, r.fee, r."paymentMethod", r.code, r.verified, r."createdAt",
@@ -12,19 +42,17 @@ export async function getRegistrations() {
       LEFT JOIN "Seminar" s ON r."seminarId" = s.id
       ORDER BY r."createdAt" DESC
     `);
-    return result.rows.map(row => ({
+    const rows = result.rows as RegistrationRow[];
+    return rows.map(row => ({
       id: row.id,
-      firstName: row.firstName,
-      lastName: row.lastName,
       name: `${row.firstName} ${row.lastName}`,
       seminar: row.seminar_title,
-      seminarId: row.seminar_id,
       participants: row.participants,
       fee: row.fee,
       paymentMethod: row.paymentMethod,
       code: row.code,
       verified: row.verified,
-      createdAt: row.createdAt,
+      createdAt: row.createdAt.toISOString(),
     }));
   } catch (error) {
     console.error('Error fetching registrations:', error);
