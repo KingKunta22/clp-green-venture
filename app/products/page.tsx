@@ -12,7 +12,7 @@ export default function Products() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [showProductModal, setShowProductModal] = useState(false)
   const [expandedDesc, setExpandedDesc] = useState<Set<number>>(new Set())
-  const [currentImageIndex, setCurrentImageIndex] = useState(0) // For modal image carousel
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
     const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
@@ -112,7 +112,7 @@ export default function Products() {
 
   const openProductModal = (product: any) => {
     setSelectedProduct(product)
-    setCurrentImageIndex(0) // reset carousel when opening
+    setCurrentImageIndex(0)
     setShowProductModal(true)
     document.body.style.overflow = 'hidden'
   }
@@ -228,7 +228,7 @@ export default function Products() {
                       )}
                     </div>
                     <div className="space-y-2 mb-4">
-                      {displayedFeatures.map((feature, idx) => (
+                      {displayedFeatures.map((feature: string, idx: number) => (
                         <div key={idx} className="flex items-start gap-2">
                           <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-1.5" />
                           <span className="text-white text-xs">{feature}</span>
@@ -261,11 +261,11 @@ export default function Products() {
             </button>
 
             <div className="grid grid-cols-1 md:grid-cols-[1fr,1.5fr] gap-0">
-              {/* Left: Image carousel or single image */}
+              {/* Left: Image carousel */}
               <div className="relative bg-zinc-800/50 min-h-[200px]">
                 {(() => {
-                  const images = selectedProduct.images || (selectedProduct.image ? [selectedProduct.image] : []);
-                  if (!images.length) return null;
+                  const images = selectedProduct.images || (selectedProduct.image ? [selectedProduct.image] : [])
+                  if (!images.length) return null
                   return (
                     <>
                       <div className="relative w-full h-full" style={{ minHeight: '300px' }}>
@@ -291,7 +291,7 @@ export default function Products() {
                             <ChevronRight className="w-5 h-5" />
                           </button>
                           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 bg-black/50 px-2 py-1 rounded-full">
-                            {images.map((_, idx) => (
+                            {images.map((_: any, idx: number) => (
                               <button
                                 key={idx}
                                 onClick={() => setCurrentImageIndex(idx)}
@@ -304,7 +304,7 @@ export default function Products() {
                         </>
                       )}
                     </>
-                  );
+                  )
                 })()}
               </div>
 
