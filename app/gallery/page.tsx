@@ -71,27 +71,16 @@ export default function Gallery() {
   // Fetch images from database
   useEffect(() => {
     const loadImages = async () => {
+      console.log('Starting to load images...');
       try {
-        // Add inside the loadImages function:
-const loadImages = async () => {
-  console.log('Starting to load images...');
-  try {
-    const images = await getGalleryImages();
-    console.log('Fetched dbImages:', images);
-    setDbImages(images);
-  } catch (error) {
-    console.error('Failed to load gallery images:', error);
-  } finally {
-    setLoading(false);
-    console.log('Loading set to false');
-  }
-};
         const images = await getGalleryImages();
+        console.log('Fetched dbImages:', images);
         setDbImages(images);
       } catch (error) {
         console.error('Failed to load gallery images:', error);
       } finally {
         setLoading(false);
+        console.log('Loading set to false');
       }
     };
     loadImages();
@@ -115,10 +104,10 @@ const loadImages = async () => {
   const filteredImages = activeTag === 'All'
     ? galleryImages
     : galleryImages.filter(img => img.tag === activeTag);
-    console.log('filteredImages length:', filteredImages.length);
+  console.log('filteredImages length:', filteredImages.length);
   const displayedImages = showAllImages ? filteredImages : filteredImages.slice(0, 15);
 
-  // Intersection Observer
+  // Intersection Observer (only for other sections, not the grid itself)
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
@@ -255,7 +244,7 @@ const loadImages = async () => {
           ))}
         </div>
 
-        {/* GALLERY GRID */}
+        {/* GALLERY GRID - Now always visible */}
         <div 
           ref={(el) => { sectionRefs.current[2] = el }}
           data-section-index="2"
@@ -264,23 +253,15 @@ const loadImages = async () => {
           {displayedImages.map((image, index) => (
             <div 
               key={image.id}
-              className={`relative break-inside-avoid group cursor-pointer transition-all duration-700 ease-out transform ${
-                visibleSections.has(2) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
-              }`}
-              style={{ 
-                transitionDelay: `${index * 50}ms`,
-                animation: visibleSections.has(2) ? 'fadeInUp 0.5s ease-out forwards' : 'none'
-              }}
+              className="relative break-inside-avoid group cursor-pointer transition-all duration-700 ease-out"
               onClick={() => handleImageClick(image.id)}
             >
               <div className="relative overflow-hidden rounded-2xl bg-zinc-900/30 border border-green-800/20 transition-all duration-500 group-hover:border-green-600/30 group-hover:scale-[1.02]">
                 <div className="relative h-64 w-full">
-                  <Image
+                  <img
                     src={image.src}
                     alt={image.alt}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover w-full h-full"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div className="absolute bottom-0 left-0 right-0 p-4">
@@ -291,7 +272,6 @@ const loadImages = async () => {
                   <div className="absolute top-4 right-4 p-2 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110">
                     <Maximize2 className="w-4 h-4 text-white" />
                   </div>
-                  <div className="text-white text-center">Total images: {galleryImages.length} | Showing: {displayedImages.length}</div>
                 </div>
               </div>
             </div>
@@ -396,13 +376,10 @@ const loadImages = async () => {
               {displayedImages.map((image) => (
                 image.id === selectedImage && (
                   <div key={image.id} className="relative w-full max-w-6xl h-full max-h-[90vh] animate-scale-in">
-                    <Image
+                    <img
                       src={image.src}
                       alt={image.alt}
-                      fill
-                      className="object-contain"
-                      sizes="100vw"
-                      priority
+                      className="object-contain w-full h-full"
                     />
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 animate-fade-up">
                       <h3 className="text-2xl font-bold text-white mb-2">{image.alt}</h3>
