@@ -2,7 +2,7 @@
 
 import { query } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function getGalleryImages() {
   try {
@@ -15,40 +15,57 @@ export async function getGalleryImages() {
 }
 
 export async function uploadImage(formData: FormData) {
-  const file = formData.get('file') as File;
-  const tag = formData.get('tag') as string;
-  const alt = formData.get('alt') as string || null;
+  try {
 
-  if (!file || !tag) {
-    throw new Error('Missing required fields');
+    const testResult = await query('SELECT NOW()');
+    console.log('DB test:', testResult.rows);
+    const file = formData.get('file') as File;
+    const tag = formData.get('tag') as string;
+    const alt = formData.get('alt') as string || null;
+
+    if (!file || !tag) {
+      throw new Error('Missing required fields: file or tag');
+    }
+
+    // Upload to Supabase Storage
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    console.log('Uploading to bucket "gallery" with filename:', fileName);
+
+    const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
+      .from('gallery')
+      .upload(fileName, file);
+
+    if (uploadError) {
+      console.error('Supabase storage upload error:', uploadError);
+      throw new Error(`Storage upload failed: ${uploadError.message}`);
+    }
+
+    // Get public URL
+    const { data: urlData } = supabaseAdmin.storage
+      .from('gallery')
+      .getPublicUrl(fileName);
+
+    const publicUrl = urlData.publicUrl;
+    console.log('Public URL:', publicUrl);
+
+    // Save record in database
+    const dbResult = await query(
+      `INSERT INTO "GalleryImage" (id, url, tag, alt, "createdAt")
+       VALUES (gen_random_uuid(), $1, $2, $3, NOW())
+       RETURNING id`,
+      [publicUrl, tag, alt]
+    );
+
+    console.log('Database insert successful, id:', dbResult.rows[0]?.id);
+
+    revalidatePath('/admin/dashboard/gallery');
+    revalidatePath('/gallery');
+    return { success: true };
+  } catch (error) {
+    console.error('Upload error:', error);
+    throw new Error(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
-
-  // Upload to Supabase Storage
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Date.now()}.${fileExt}`;
-  const { data, error } = await supabase.storage
-    .from('gallery')
-    .upload(fileName, file);
-
-  if (error) {
-    console.error('Storage upload error:', error);
-    throw new Error('Failed to upload image');
-  }
-
-  // Get public URL
-  const { data: { publicUrl } } = supabase.storage
-    .from('gallery')
-    .getPublicUrl(fileName);
-
-  // Save record in database
-  await query(
-    `INSERT INTO "GalleryImage" (id, url, tag, alt, "createdAt")
-     VALUES (gen_random_uuid(), $1, $2, $3, NOW())`,
-    [publicUrl, tag, alt]
-  );
-
-  revalidatePath('/admin/dashboard/gallery');
-  revalidatePath('/gallery');
 }
 
 export async function deleteImage(id: string) {
@@ -58,13 +75,12 @@ export async function deleteImage(id: string) {
     if (result.rows.length === 0) return;
 
     const url = result.rows[0].url;
-    // Extract filename from URL (assumes format: .../gallery/filename)
     const fileName = url.split('/').pop();
     if (fileName) {
-      await supabase.storage.from('gallery').remove([fileName]);
+      const { error: deleteError } = await supabaseAdmin.storage.from('gallery').remove([fileName]);
+      if (deleteError) console.error('Storage delete error:', deleteError);
     }
 
-    // Delete record
     await query('DELETE FROM "GalleryImage" WHERE id = $1', [id]);
 
     revalidatePath('/admin/dashboard/gallery');

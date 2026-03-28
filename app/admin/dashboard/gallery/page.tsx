@@ -42,30 +42,31 @@ export default function GalleryPage() {
     }
   };
 
-  const handleUpload = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!uploadForm.file || !uploadForm.tag) {
-      alert('Please select a file and a tag');
-      return;
-    }
+const handleUpload = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!uploadForm.file || !uploadForm.tag) {
+    alert('Please select a file and a tag');
+    return;
+  }
 
-    setUploading(true);
-    const formData = new FormData();
-    formData.append('file', uploadForm.file);
-    formData.append('tag', uploadForm.tag);
-    if (uploadForm.alt) formData.append('alt', uploadForm.alt);
+  setUploading(true);
+  const formData = new FormData();
+  formData.append('file', uploadForm.file);
+  formData.append('tag', uploadForm.tag);
+  if (uploadForm.alt) formData.append('alt', uploadForm.alt);
 
-    try {
-      await uploadImage(formData);
-      await loadImages();
-      setShowUploadModal(false);
-      setUploadForm({ file: null, tag: '', alt: '' });
-    } catch (error) {
-      alert('Upload failed: ' + (error as Error).message);
-    } finally {
-      setUploading(false);
-    }
-  };
+  try {
+    await uploadImage(formData);
+    await loadImages();
+    setShowUploadModal(false);
+    setUploadForm({ file: null, tag: '', alt: '' });
+  } catch (error) {
+    console.error('Upload error:', error);
+    alert(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  } finally {
+    setUploading(false);
+  }
+};
 
   const handleDelete = async (id: string) => {
     if (confirm('Delete this image?')) {

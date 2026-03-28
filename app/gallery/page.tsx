@@ -72,6 +72,20 @@ export default function Gallery() {
   useEffect(() => {
     const loadImages = async () => {
       try {
+        // Add inside the loadImages function:
+const loadImages = async () => {
+  console.log('Starting to load images...');
+  try {
+    const images = await getGalleryImages();
+    console.log('Fetched dbImages:', images);
+    setDbImages(images);
+  } catch (error) {
+    console.error('Failed to load gallery images:', error);
+  } finally {
+    setLoading(false);
+    console.log('Loading set to false');
+  }
+};
         const images = await getGalleryImages();
         setDbImages(images);
       } catch (error) {
@@ -93,11 +107,15 @@ export default function Gallery() {
       }))
     : staticGalleryImages;
 
+  console.log('galleryImages length:', galleryImages.length);
+  console.log('galleryImages sample:', galleryImages.slice(0, 2));
+
   const tags = ['All', ...Array.from(new Set(galleryImages.map(img => img.tag))).sort()];
 
   const filteredImages = activeTag === 'All'
     ? galleryImages
     : galleryImages.filter(img => img.tag === activeTag);
+    console.log('filteredImages length:', filteredImages.length);
   const displayedImages = showAllImages ? filteredImages : filteredImages.slice(0, 15);
 
   // Intersection Observer
@@ -273,6 +291,7 @@ export default function Gallery() {
                   <div className="absolute top-4 right-4 p-2 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110">
                     <Maximize2 className="w-4 h-4 text-white" />
                   </div>
+                  <div className="text-white text-center">Total images: {galleryImages.length} | Showing: {displayedImages.length}</div>
                 </div>
               </div>
             </div>
