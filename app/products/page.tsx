@@ -414,6 +414,7 @@ export default function Products() {
         .animate-fade-in {
           animation: fadeIn 0.3s ease-out forwards;
         }
+          
       `}</style>
     </section>
   )
