@@ -5,6 +5,13 @@ import Image from 'next/image';
 import { X, Maximize2, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { getGalleryImages } from '@/app/admin/dashboard/gallery/actions';
 
+// Import Swiper and its styles (only for mobile carousel)
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+
 interface GalleryImage {
   id: string;
   url: string;
@@ -65,6 +72,7 @@ export default function Gallery() {
   const [activeTag, setActiveTag] = useState('All');
   const [dbImages, setDbImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Fetch images from database
@@ -82,6 +90,16 @@ export default function Gallery() {
     loadImages();
   }, []);
 
+  // Detect mobile viewport (breakpoint at 768px)
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // Merge static and database images, with DB images first
   const dbImagesMapped = dbImages.map(img => ({
     id: img.id,
@@ -93,7 +111,7 @@ export default function Gallery() {
   // Combine: DB images first, then static
   const allGalleryImages = [...dbImagesMapped, ...staticGalleryImages];
 
-  // Deduplicate by src? In case same image appears twice (unlikely)
+  // Deduplicate by src (optional)
   const uniqueImages = Array.from(new Map(allGalleryImages.map(img => [img.src, img])).values());
 
   const tags = ['All', ...Array.from(new Set(uniqueImages.map(img => img.tag))).sort()];
@@ -183,27 +201,27 @@ export default function Gallery() {
   }
 
   return (
-    <section id="gallery" className="relative z-10 bg-[#060b05] px-6 py-20 shadow-[0_-20px_50px_rgba(0,0,0,0.4)] min-h-screen text-white">
+    <section id="gallery" className="relative z-10 bg-[#060b05] px-4 sm:px-6 py-12 sm:py-20 shadow-[0_-20px_50px_rgba(0,0,0,0.4)] min-h-screen text-white">
       <div className="max-w-7xl mx-auto">
         
-        {/* HEADER */}
+        {/* HEADER - responsive text */}
         <div 
           ref={(el) => { sectionRefs.current[0] = el }}
-          className="text-center mb-16 transition-all duration-1000 opacity-100 translate-y-0"
+          className="text-center mb-12 sm:mb-16 transition-all duration-1000 opacity-100 translate-y-0"
         >
-          <span className="text-green-500 font-mono tracking-widest uppercase text-sm block mb-4">Visual Journey</span>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
+          <span className="text-green-500 font-mono tracking-widest uppercase text-xs sm:text-sm block mb-2 sm:mb-4">Visual Journey</span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-6">
             Our <span className="text-green-600">Agarwood</span> Gallery
           </h1>
-          <p className="text-zinc-400 text-lg max-w-3xl mx-auto mb-8 leading-relaxed">
+          <p className="text-zinc-400 text-sm sm:text-base md:text-lg max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4">
             Explore our journey through sustainable agarwood cultivation, from plantation to premium products
           </p>
         </div>
 
-        {/* TAG FILTERS */}
+        {/* TAG FILTERS - responsive */}
         <div 
           ref={(el) => { sectionRefs.current[1] = el }}
-          className="flex flex-wrap justify-center gap-3 mb-12 transition-all duration-1000 opacity-100 translate-y-0"
+          className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-12 transition-all duration-1000 opacity-100 translate-y-0"
         >
           {tags.map((tag, index) => (
             <button
@@ -212,7 +230,7 @@ export default function Gallery() {
                 setActiveTag(tag);
                 setShowAllImages(false);
               }}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
                 activeTag === tag
                   ? 'bg-green-600 text-white scale-105'
                   : 'bg-zinc-800/50 text-zinc-300 hover:bg-zinc-700/50 hover:text-white'
@@ -223,44 +241,87 @@ export default function Gallery() {
           ))}
         </div>
 
-        {/* GALLERY GRID */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-          {displayedImages.map((image, index) => (
-            <div 
-              key={image.id}
-              className="relative break-inside-avoid group cursor-pointer transition-all duration-500 hover:scale-[1.02]"
-              onClick={() => handleImageClick(image.id)}
+        {/* GALLERY: on mobile, carousel; on desktop, masonry grid */}
+        {isMobile ? (
+          // Mobile carousel
+          <div className="relative w-full max-w-full mx-auto pb-12">
+            <Swiper
+              modules={[Pagination, Navigation]}
+              pagination={{ clickable: true, dynamicBullets: true }}
+              navigation
+              spaceBetween={20}
+              slidesPerView={1}
+              centeredSlides
+              loop={filteredImages.length > 1}
+              className="w-full"
             >
-              <div className="relative overflow-hidden rounded-2xl bg-zinc-900/30 border border-green-800/20 transition-all duration-500 group-hover:border-green-600/30">
-                <div className="relative h-64 w-full">
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <p className="text-white font-medium">{image.alt}</p>
-                      <p className="text-green-400 text-sm mt-1">{image.tag}</p>
+              {filteredImages.map((image) => (
+                <SwiperSlide key={image.id}>
+                  <div 
+                    className="relative aspect-[3/4] w-full cursor-pointer overflow-hidden rounded-2xl bg-zinc-900/30 border border-green-800/20 group"
+                    onClick={() => handleImageClick(image.id)}
+                  >
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      sizes="100vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <p className="text-white font-medium text-sm sm:text-base">{image.alt}</p>
+                        <p className="text-green-400 text-xs sm:text-sm mt-1">{image.tag}</p>
+                      </div>
+                    </div>
+                    <div className="absolute top-4 right-4 p-2 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110">
+                      <Maximize2 className="w-4 h-4 text-white" />
                     </div>
                   </div>
-                  <div className="absolute top-4 right-4 p-2 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110">
-                    <Maximize2 className="w-4 h-4 text-white" />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        ) : (
+          // Desktop masonry grid (unchanged)
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+            {displayedImages.map((image, index) => (
+              <div 
+                key={image.id}
+                className="relative break-inside-avoid group cursor-pointer transition-all duration-500 hover:scale-[1.02]"
+                onClick={() => handleImageClick(image.id)}
+              >
+                <div className="relative overflow-hidden rounded-2xl bg-zinc-900/30 border border-green-800/20 transition-all duration-500 group-hover:border-green-600/30">
+                  <div className="relative h-64 w-full">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <p className="text-white font-medium">{image.alt}</p>
+                        <p className="text-green-400 text-sm mt-1">{image.tag}</p>
+                      </div>
+                    </div>
+                    <div className="absolute top-4 right-4 p-2 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110">
+                      <Maximize2 className="w-4 h-4 text-white" />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
-        {/* VIEW MORE / VIEW LESS BUTTON */}
-        {filteredImages.length > 15 && (
+        {/* VIEW MORE / VIEW LESS BUTTON (only shown on desktop; mobile already loops all) */}
+        {!isMobile && filteredImages.length > 15 && (
           <div className="text-center my-8">
             <button
               onClick={() => setShowAllImages(!showAllImages)}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-900/20 hover:shadow-green-900/40"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-900/20 hover:shadow-green-900/40 text-sm sm:text-base"
             >
               {showAllImages ? (
                 <>
@@ -292,22 +353,22 @@ export default function Gallery() {
 
         {/* IMAGE COUNT */}
         <div className="text-center mt-8">
-          <p className="text-zinc-500 text-sm">
+          <p className="text-zinc-500 text-xs sm:text-sm">
             Showing {displayedImages.length} of {filteredImages.length} images • {uniqueImages.length} total images in gallery • Click to enlarge
           </p>
-          <div className="flex flex-wrap justify-center gap-4 mt-4">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mt-4">
             {tags.filter(t => t !== 'All').map((tag, index) => {
               const colors = ['bg-green-500', 'bg-green-600', 'bg-green-700', 'bg-green-800', 'bg-emerald-500', 'bg-emerald-600', 'bg-emerald-700'];
               return (
-                <div key={tag} className="text-xs text-zinc-600">
-                  <span className={`inline-block w-3 h-3 rounded-full ${colors[index % colors.length]} mr-1`}></span> {tag}
+                <div key={tag} className="text-[10px] sm:text-xs text-zinc-600">
+                  <span className={`inline-block w-2 h-2 sm:w-3 sm:h-3 rounded-full ${colors[index % colors.length]} mr-1`}></span> {tag}
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* FULLSCREEN VIEWER */}
+        {/* FULLSCREEN VIEWER (unchanged, works with both views) */}
         {selectedImage !== null && (
           <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black transition-all duration-500 ${
             isFullscreen ? 'opacity-100' : 'opacity-0 pointer-events-none'
@@ -344,8 +405,8 @@ export default function Gallery() {
                       priority
                     />
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                      <h3 className="text-2xl font-bold text-white mb-2">{image.alt}</h3>
-                      <div className="flex items-center justify-between">
+                      <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">{image.alt}</h3>
+                      <div className="flex items-center justify-between flex-wrap gap-2">
                         <div className="flex items-center gap-4">
                           <p className="text-green-400">{image.tag}</p>
                           <span className="text-zinc-500">•</span>
@@ -362,7 +423,7 @@ export default function Gallery() {
             </div>
 
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-sm rounded-lg px-4 py-2">
-              <p className="text-zinc-400 text-sm">
+              <p className="text-zinc-400 text-xs sm:text-sm">
                 <span className="inline-block bg-zinc-800 px-2 py-1 rounded mr-2">← →</span> Navigate
                 <span className="inline-block bg-zinc-800 px-2 py-1 rounded mx-2">ESC</span> Close
               </p>
@@ -370,15 +431,15 @@ export default function Gallery() {
           </div>
         )}
 
-        {/* GALLERY INFO */}
-        <div className="mt-20 text-center">
-          <div className="bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-3xl p-8 max-w-3xl mx-auto">
-            <h3 className="text-2xl font-bold mb-4">Behind the Scenes</h3>
-            <p className="text-zinc-400 mb-6 leading-relaxed">
+        {/* GALLERY INFO (responsive) */}
+        <div className="mt-16 sm:mt-20 text-center">
+          <div className="bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-3xl mx-auto">
+            <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Behind the Scenes</h3>
+            <p className="text-zinc-400 text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed">
               Our gallery showcases the complete journey of sustainable agarwood cultivation. 
               From carefully managed plantations to expert processing techniques, every image tells a story of quality, sustainability, and Filipino agricultural excellence.
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
               {[
                 { value: '25+', label: 'Gallery Images' },
                 { value: '7', label: 'Categories' },
@@ -386,8 +447,8 @@ export default function Gallery() {
                 { value: '24/7', label: 'Quality Focus' }
               ].map((item, index) => (
                 <div key={index} className="text-center transition-all duration-500 hover:scale-110">
-                  <div className="text-2xl font-bold text-green-500 mb-1">{item.value}</div>
-                  <div className="text-zinc-400 text-sm">{item.label}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-green-500 mb-1">{item.value}</div>
+                  <div className="text-zinc-400 text-xs sm:text-sm">{item.label}</div>
                 </div>
               ))}
             </div>
