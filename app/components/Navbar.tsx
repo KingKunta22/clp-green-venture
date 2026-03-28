@@ -1,5 +1,5 @@
 'use client'
-import { Send } from 'lucide-react'
+import { Send, Menu, X } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 
@@ -8,44 +8,32 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('home')
   const [isScrollingDown, setIsScrollingDown] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
-  
-  // Track previous scroll position
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   const lastScrollY = useRef(0)
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
       
-      // DETECT SCROLL DIRECTION
       if (currentScrollY > lastScrollY.current) {
-        // Scrolling DOWN
         setIsScrollingDown(true)
-        // Minimize navbar when scrolling down (after a small threshold)
-        if (currentScrollY > 100) {
-          setIsMinimized(true)
-        }
+        if (currentScrollY > 100) setIsMinimized(true)
       } else if (currentScrollY < lastScrollY.current) {
-        // Scrolling UP
         setIsScrollingDown(false)
-        // Restore navbar size when scrolling up
         setIsMinimized(false)
       }
       
-      // Save current scroll position for next comparison
       lastScrollY.current = currentScrollY
       
-      // Job 1: Check if at the very top
       if (currentScrollY <= 10) {
-        setIsScrolled(false)  // At top = always transparent
-        setIsMinimized(false) // At top = restore full size
+        setIsScrolled(false)
+        setIsMinimized(false)
       } else {
-        // Not at top = show background when scrolling UP, transparent when scrolling DOWN
         setIsScrolled(!isScrollingDown)
       }
       
-      // Job 2: Check which section is active
       const sections = ['home', 'about', 'seminars', 'products', 'gallery']
-      
       for (const section of sections) {
         const element = document.getElementById(section)
         if (element) {
@@ -60,15 +48,19 @@ export default function Navbar() {
 
     window.addEventListener('scroll', handleScroll)
     handleScroll()
-    
     return () => window.removeEventListener('scroll', handleScroll)
   }, [isScrollingDown])
+
+  // Close mobile menu when a link is clicked
+  const handleLinkClick = () => {
+    setMobileMenuOpen(false)
+  }
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
-        ? 'bg-black/70 backdrop-blur-md'  // Dark semi-transparent when scrolling UP
-        : 'bg-transparent'                // Transparent when scrolling DOWN or at top
+        ? 'bg-black/70 backdrop-blur-md' 
+        : 'bg-transparent'
     } ${isMinimized ? 'py-1' : 'py-0'}`}>
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex items-center justify-between transition-all duration-300 ${
@@ -79,7 +71,7 @@ export default function Navbar() {
           <div className="flex-shrink-0">
             <a href="#home" className="flex items-center rounded-full">
               <div className={`relative transition-all duration-300 ${
-                isMinimized ? 'w-8 h-8' : 'w-12 h-12'
+                isMinimized ? 'w-8 h-8' : 'w-10 h-10 sm:w-12 sm:h-12'
               }`}>
                 <Image
                   src="/images/logo/clplogo.png"
@@ -93,82 +85,78 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* CENTER: NAV LINKS */}
-          <div className={`flex items-center space-x-4 sm:space-x-8 transition-all duration-300 ${
-            isMinimized ? 'text-sm' : 'text-base'
-          }`}>
-            <a 
-              href="#home" 
-              className={`px-2 py-1 uppercase font-bold transition-colors relative ${
-                activeSection === 'home' 
-                  ? 'text-white after:content-[""] after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:bg-green-500' 
-                  : 'text-white/80 hover:text-white'
-              }`}
-            >
-              Home
-            </a>
-            
-            <a 
-              href="#about" 
-              className={`px-2 py-1 uppercase font-bold transition-colors relative ${
-                activeSection === 'about' 
-                  ? 'text-white after:content-[""] after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:bg-green-500' 
-                  : 'text-white/80 hover:text-white'
-              }`}
-            >
-              About
-            </a>
-
-            <a 
-              href="#products"
-              className={`px-2 py-1 uppercase font-bold transition-colors relative ${
-                activeSection === 'products'
-                  ? 'text-white after:content-[""] after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:bg-green-500' 
-                  : 'text-white/80 hover:text-white'
-              }`}
-            >
-              Products
-            </a>      
-
-            <a 
-              href="#seminars"
-              className={`px-2 py-1 uppercase font-bold transition-colors relative ${
-                activeSection === 'seminars'
-                  ? 'text-white after:content-[""] after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:bg-green-500' 
-                  : 'text-white/80 hover:text-white'
-              }`}
-            >
-              Seminars
-            </a>
-
-            <a 
-              href="#gallery" 
-              className={`px-2 py-1 uppercase font-bold transition-colors relative ${
-                activeSection === 'gallery' 
-                  ? 'text-white after:content-[""] after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:bg-green-500' 
-                  : 'text-white/80 hover:text-white'
-              }`}
-            >
-              Gallery
-            </a>
+          {/* DESKTOP NAV LINKS (hidden on mobile) */}
+          <div className="hidden md:flex items-center space-x-4 lg:space-x-8 transition-all duration-300">
+            {['home', 'about', 'products', 'seminars', 'gallery'].map((section) => (
+              <a 
+                key={section}
+                href={`#${section}`}
+                className={`px-2 py-1 uppercase font-bold transition-colors relative ${
+                  activeSection === section 
+                    ? 'text-white after:content-[""] after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:bg-green-500' 
+                    : 'text-white/80 hover:text-white'
+                } ${isMinimized ? 'text-xs lg:text-sm' : 'text-sm lg:text-base'}`}
+              >
+                {section === 'home' ? 'Home' : section.charAt(0).toUpperCase() + section.slice(1)}
+              </a>
+            ))}
           </div>
-              
-          {/* RIGHT: MESSAGE US BUTTON */}
+
+          {/* MOBILE MENU BUTTON */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-white hover:bg-white/20 rounded-lg transition-colors"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+
+          {/* RIGHT: MESSAGE US BUTTON (desktop) */}
           <a 
             href="https://www.facebook.com/profile.php?id=61573163535908" 
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center gap-2 transition-all duration-300 ${
+            className={`hidden md:flex items-center gap-2 transition-all duration-300 ${
               isScrolled 
-                ? 'bg-green-600 hover:bg-green-700 text-white backdrop-blur-sm'  // Solid green when navbar has background
-                : 'bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm'    // Glass button when transparent
-            } ${isMinimized ? 'px-2 py-1 text-sm' : 'px-3 py-2'} rounded-md border border-green-500/30 hover:border-green-500/50`}
+                ? 'bg-green-600 hover:bg-green-700 text-white backdrop-blur-sm' 
+                : 'bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm'
+            } ${isMinimized ? 'px-2 py-1 text-xs' : 'px-3 py-2 text-sm'} rounded-md border border-green-500/30 hover:border-green-500/50`}
           >
             <Send size={isMinimized ? 14 : 16} />
             <span>Message Us</span>
           </a>
-
         </div>
+
+        {/* MOBILE MENU DROPDOWN */}
+        {mobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-md border-t border-green-800/30 py-4 px-4 flex flex-col space-y-3">
+            {['home', 'about', 'products', 'seminars', 'gallery'].map((section) => (
+              <a 
+                key={section}
+                href={`#${section}`}
+                onClick={handleLinkClick}
+                className={`block py-2 px-3 rounded-lg uppercase font-bold transition-colors ${
+                  activeSection === section 
+                    ? 'bg-green-600 text-white' 
+                    : 'text-white/80 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {section === 'home' ? 'Home' : section.charAt(0).toUpperCase() + section.slice(1)}
+              </a>
+            ))}
+            {/* Mobile Message Us button */}
+            <a 
+              href="https://www.facebook.com/profile.php?id=61573163535908" 
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleLinkClick}
+              className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg mt-2"
+            >
+              <Send size={16} />
+              <span>Message Us</span>
+            </a>
+          </div>
+        )}
       </div>
     </nav>
   )

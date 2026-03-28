@@ -2,11 +2,10 @@
 
 import Image from 'next/image'
 import { useEffect, useState, useRef } from 'react'
-import { ChevronLeft, ChevronRight, Award, Trophy, Star, Shield, ChevronDown, ChevronUp } from 'lucide-react'
+import { Award, Trophy, Star, Shield, ChevronDown, ChevronUp } from 'lucide-react'
 
 export default function About() {
   const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set())
-  const [currentAwardIndex, setCurrentAwardIndex] = useState(0)
   const [showAllAwards, setShowAllAwards] = useState(false)
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
   const [expandedAwardDesc, setExpandedAwardDesc] = useState<Set<number>>(new Set())
@@ -37,7 +36,6 @@ export default function About() {
     return () => observer.disconnect()
   }, [])
 
-  // Awards data with image paths
   const awards = [
     {
       id: 1,
@@ -91,51 +89,40 @@ export default function About() {
     }
   ]
 
-  const displayedAwards = showAllAwards ? awards : awards.slice(0, 3)
-
-  const nextAward = () => {
-    setCurrentAwardIndex((prev) => (prev + 1) % displayedAwards.length)
-  }
-
-  const prevAward = () => {
-    setCurrentAwardIndex((prev) => (prev - 1 + displayedAwards.length) % displayedAwards.length)
-  }
-
   return (
-    <section className="-mt-4 relative z-10 bg-[#060b05] rounded-t-[3rem] px-6 py-20 shadow-[0_-20px_50px_rgba(0,0,0,0.4)] min-h-screen text-white">
+    <section className="-mt-4 relative z-10 bg-[#060b05] rounded-t-[2rem] sm:rounded-t-[3rem] px-4 sm:px-6 py-12 sm:py-20 shadow-[0_-20px_50px_rgba(0,0,0,0.4)] text-white">
       <div className="max-w-6xl mx-auto">
         
-        {/* 1. ABOUT CLP GREEN VENTURE */}
+        {/* 1. ABOUT SECTION – Stacked on mobile, grid on desktop */}
         <div 
           ref={(el) => { sectionRefs.current[0] = el }}
           data-section-index="0"
-          className="grid md:grid-cols-2 gap-12 items-start mb-24"
+          className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 items-start mb-16 md:mb-24"
         >
+          {/* Left content – our story */}
           <div className={`transition-all duration-1000 ease-out transform ${
             visibleSections.has(0) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
-            <span className="text-green-500 font-mono tracking-widest uppercase text-sm block mb-2">Our Story</span>
-            <h2 className="text-5xl font-extrabold mt-4 leading-tight">
-              From Direct Selling <br/>to <span className="text-green-600">Sustainable Farming</span>
+            <span className="text-green-500 font-mono tracking-widest uppercase text-xs sm:text-sm block mb-2">Our Story</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mt-4 leading-tight">
+              From Direct Selling <br className="hidden sm:block"/>to <span className="text-green-600">Sustainable Farming</span>
             </h2>
             
-            {/* Company History Explanation */}
-            <div className="mt-8 space-y-6">
-              <div className="bg-gradient-to-r from-green-900/20 to-transparent p-6 rounded-xl border-l-4 border-green-500">
-                <p className="text-white text-lg leading-relaxed">
+            <div className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
+              <div className="bg-gradient-to-r from-green-900/20 to-transparent p-4 sm:p-6 rounded-xl border-l-4 border-green-500">
+                <p className="text-white text-base sm:text-lg leading-relaxed">
                   <span className="font-bold text-green-400">CLP started as CLP Direct Selling</span> — a company focused on bringing quality products to Filipino families. Today, we've evolved into <span className="font-bold text-green-400">CLP Green Venture Inc.</span>, now focusing on agarwood cultivation while continuing our direct selling roots.
                 </p>
               </div>
               
-              <p className="text-zinc-400 text-lg leading-relaxed">
+              <p className="text-zinc-400 text-sm sm:text-base md:text-lg leading-relaxed">
                 Under the guidance of <span className="text-white font-semibold">Charlie Patigue</span>, we've grown from a direct selling foundation into a trusted authority in both the agarwood industry and consumer goods distribution.
               </p>
             </div>
 
-            {/* Current Product Lines */}
-            <div className="mt-8">
-              <h3 className="text-green-400 font-bold text-sm uppercase tracking-wider mb-4">What We Sell Today</h3>
-              <div className="flex flex-wrap gap-3">
+            <div className="mt-6 sm:mt-8">
+              <h3 className="text-green-400 font-bold text-xs sm:text-sm uppercase tracking-wider mb-3 sm:mb-4">What We Sell Today</h3>
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 {[
                   { name: 'M-SECRET', desc: 'Korean Skincare' },
                   { name: 'TALA', desc: 'Cleaning Solutions' },
@@ -143,22 +130,22 @@ export default function About() {
                   { name: 'CLP Agarwood', desc: 'Agarwood Products' },
                   { name: 'Pet Food', desc: 'Dog Food' }
                 ].map((product) => (
-                  <div key={product.name} className="bg-zinc-800/50 border border-green-800/30 rounded-full px-4 py-2 text-sm">
+                  <div key={product.name} className="bg-zinc-800/50 border border-green-800/30 rounded-full px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
                     <span className="text-white font-bold">{product.name}</span>
-                    <span className="text-zinc-500 ml-2">• {product.desc}</span>
+                    <span className="text-zinc-500 ml-1 sm:ml-2">• {product.desc}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
           
-          {/* RIGHT SIDE */}
-          <div className={`bg-zinc-900/50 border border-green-900/30 p-8 rounded-3xl mt-4 transition-all duration-1000 ease-out delay-200 transform ${
+          {/* Right content – Charlie's photo */}
+          <div className={`bg-zinc-900/50 border border-green-900/30 p-6 sm:p-8 rounded-2xl sm:rounded-3xl transition-all duration-1000 ease-out delay-200 transform ${
             visibleSections.has(0) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
             <h3 className="text-green-500 font-bold uppercase tracking-tighter text-xs mb-4">The man behind the business</h3>
             
-            <div className="relative w-full h-[400px] mx-auto overflow-hidden rounded-md">
+            <div className="relative w-full h-[300px] sm:h-[400px] mx-auto overflow-hidden rounded-md">
               <Image
                 src={'/images/sircharlie2.jpg'}
                 alt={'Charlie Patigue'}
@@ -169,105 +156,105 @@ export default function About() {
               />
             </div>
             
-            <div className="mt-8 p-4 bg-green-900/20 rounded-xl transition-all duration-500 hover:bg-green-900/30">
-              <p className="text-white font-bold text-lg text-center mb-2">Charlie L. Patigue</p>
-              <p className="text-green-400 text-sm text-center mb-3">CEO, CLP GREEN VENTURE INC.</p>
-              <p className="text-zinc-400 text-sm leading-relaxed">
+            <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-green-900/20 rounded-xl transition-all duration-500 hover:bg-green-900/30">
+              <p className="text-white font-bold text-base sm:text-lg text-center mb-1 sm:mb-2">Charlie L. Patigue</p>
+              <p className="text-green-400 text-xs sm:text-sm text-center mb-2 sm:mb-3">CEO, CLP GREEN VENTURE INC.</p>
+              <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed">
                 From direct selling to sustainable farming — Charlie built CLP into a trusted partner for growers, entrepreneurs, and families across the Philippines.
               </p>
             </div>
           </div>
 
-            {/* Note to avoid confusion */}
-            <div className="p-4 bg-green-900/20 border border-green-800/30 rounded-lg col-span-2">
-              <p className="text-xs text-green-300 flex items-start gap-2">
-                <span className="font-bold text-green-400">Note:</span>
-                <span>You might see both "CLP Direct Selling" and "CLP Green Venture" on our awards. Same company! We're still selling all our products, just expanding into agarwood farming.</span>
-              </p>
-            </div>
+          {/* Note – spans both columns on desktop, full width on mobile */}
+          <div className="p-3 sm:p-4 bg-green-900/20 border border-green-800/30 rounded-lg col-span-full">
+            <p className="text-[10px] sm:text-xs text-green-300 flex items-start gap-2">
+              <span className="font-bold text-green-400">Note:</span>
+              <span>You might see both "CLP Direct Selling" and "CLP Green Venture" on our awards. Same company! We're still selling all our products, just expanding into agarwood farming.</span>
+            </p>
+          </div>
         </div>
 
-        {/* 2. PARTNERSHIP BENEFITS - SIMPLIFIED VERSION */}
+        {/* 2. PARTNERSHIP BENEFITS – grid stacks on mobile */}
         <div 
           ref={(el) => { sectionRefs.current[1] = el }}
           data-section-index="1"
-          className={`mb-24 transition-all duration-1000 ease-out transform ${
+          className={`mb-16 md:mb-24 transition-all duration-1000 ease-out transform ${
             visibleSections.has(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
-          <div className="col-span-full mb-12 text-center">
-            <h3 className="text-4xl font-bold mb-4">Why Partner With Us?</h3>
-            <p className="text-zinc-400 text-lg max-w-2xl mx-auto">Simple, clear benefits for our partners and investors</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4">Why Partner With Us?</h3>
+            <p className="text-zinc-400 text-base sm:text-lg max-w-2xl mx-auto px-4">Simple, clear benefits for our partners and investors</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-6 bg-zinc-900/80 border border-green-800/30 rounded-2xl hover:border-green-600/50 transition-all duration-300 hover:-translate-y-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-6">
+            <div className="p-5 sm:p-6 bg-zinc-900/80 border border-green-800/30 rounded-2xl hover:border-green-600/50 transition-all duration-300 hover:-translate-y-1">
               <div className="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center mb-4">
                 <span className="text-green-500 font-bold text-xl">1</span>
               </div>
               <h4 className="text-white font-bold text-xl mb-3">Free Training</h4>
-              <p className="text-zinc-400">
+              <p className="text-zinc-400 text-base">
                 Learn from <span className="text-green-400">Juvelyn Quirog</span> and our team. We teach you everything about agarwood — from planting to selling. Online or face-to-face, your choice.
               </p>
             </div>
 
-            <div className="p-6 bg-zinc-900/80 border border-green-800/30 rounded-2xl hover:border-green-600/50 transition-all duration-300 hover:-translate-y-1">
+            <div className="p-5 sm:p-6 bg-zinc-900/80 border border-green-800/30 rounded-2xl hover:border-green-600/50 transition-all duration-300 hover:-translate-y-1">
               <div className="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center mb-4">
                 <span className="text-green-500 font-bold text-xl">2</span>
               </div>
               <h4 className="text-white font-bold text-xl mb-3">Nationwide Support</h4>
-              <p className="text-zinc-400">
+              <p className="text-zinc-400 text-base">
                 We have branches in <span className="text-green-400">Cebu, Dumaguete, Negros, and Davao</span>. Wherever you are in the Visayas or Mindanao, we're here to help.
               </p>
             </div>
 
-            <div className="p-6 bg-zinc-900/80 border border-green-800/30 rounded-2xl hover:border-green-600/50 transition-all duration-300 hover:-translate-y-1">
+            <div className="p-5 sm:p-6 bg-zinc-900/80 border border-green-800/30 rounded-2xl hover:border-green-600/50 transition-all duration-300 hover:-translate-y-1">
               <div className="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center mb-4">
                 <span className="text-green-500 font-bold text-xl">3</span>
               </div>
               <h4 className="text-white font-bold text-xl mb-3">Direct Partnership</h4>
-              <p className="text-zinc-400">
+              <p className="text-zinc-400 text-base">
                 Work directly with us — no middlemen. Visit our plantations anytime. We keep you updated on your investment.
               </p>
             </div>
           </div>
 
-          {/* Quick Stats Update */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-            <div className="text-center p-4 bg-green-900/10 rounded-xl">
-              <div className="text-3xl font-bold text-green-500">500+</div>
-              <div className="text-zinc-400 text-sm">Hectares Planted</div>
+          {/* Quick Stats – 2 columns on mobile, 4 on tablet/desktop */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-10 sm:mt-12">
+            <div className="text-center p-3 sm:p-4 bg-green-900/10 rounded-xl">
+              <div className="text-2xl sm:text-3xl font-bold text-green-500">500+</div>
+              <div className="text-zinc-400 text-xs sm:text-sm">Hectares Planted</div>
             </div>
-            <div className="text-center p-4 bg-green-900/10 rounded-xl">
-              <div className="text-3xl font-bold text-green-500">2,000+</div>
-              <div className="text-zinc-400 text-sm">Active Partners</div>
+            <div className="text-center p-3 sm:p-4 bg-green-900/10 rounded-xl">
+              <div className="text-2xl sm:text-3xl font-bold text-green-500">2,000+</div>
+              <div className="text-zinc-400 text-xs sm:text-sm">Active Partners</div>
             </div>
-            <div className="text-center p-4 bg-green-900/10 rounded-xl">
-              <div className="text-3xl font-bold text-green-500">5</div>
-              <div className="text-zinc-400 text-sm">Product Lines</div>
+            <div className="text-center p-3 sm:p-4 bg-green-900/10 rounded-xl">
+              <div className="text-2xl sm:text-3xl font-bold text-green-500">5</div>
+              <div className="text-zinc-400 text-xs sm:text-sm">Product Lines</div>
             </div>
-            <div className="text-center p-4 bg-green-900/10 rounded-xl">
-              <div className="text-3xl font-bold text-green-500">50+</div>
-              <div className="text-zinc-400 text-sm">Training Sessions</div>
+            <div className="text-center p-3 sm:p-4 bg-green-900/10 rounded-xl">
+              <div className="text-2xl sm:text-3xl font-bold text-green-500">50+</div>
+              <div className="text-zinc-400 text-xs sm:text-sm">Training Sessions</div>
             </div>
           </div>
         </div>
 
-        {/* 3. AWARDS & RECOGNITION */}
+        {/* 3. AWARDS – cards stack on mobile */}
         <div 
           ref={(el) => { sectionRefs.current[2] = el }}
           data-section-index="2"
-          className={`mb-24 transition-all duration-1000 ease-out transform ${
+          className={`mb-16 md:mb-24 transition-all duration-1000 ease-out transform ${
             visibleSections.has(2) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
-          <div className="text-center mb-12">
-            <h3 className="text-4xl font-bold mb-3">Our Achievements</h3>
-            <p className="text-zinc-400 text-lg max-w-2xl mx-auto">Recognition for our work in direct selling, skincare, and now agarwood</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3">Our Achievements</h3>
+            <p className="text-zinc-400 text-base sm:text-lg max-w-2xl mx-auto px-4">Recognition for our work in direct selling, skincare, and now agarwood</p>
           </div>
 
-          {/* First Three Awards - Large Display with Images */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          {/* First 3 awards – grid: 1 column on mobile, 2 on tablet, 3 on desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 sm:mb-12">
             {awards.slice(0, 3).map((award) => {
               const isExpanded = expandedAwardDesc.has(award.id)
               return (
@@ -275,8 +262,7 @@ export default function About() {
                   key={award.id}
                   className="bg-gradient-to-br from-green-900/20 to-zinc-900/30 border border-green-800/30 rounded-2xl overflow-hidden hover:border-green-600/30 transition-all duration-300 flex flex-col"
                 >
-                  {/* Image - takes most of the card */}
-                  <div className="relative w-full h-48 md:h-56">
+                  <div className="relative w-full h-48 sm:h-56">
                     <Image
                       src={award.image}
                       alt={award.title}
@@ -284,17 +270,13 @@ export default function About() {
                       className="object-cover"
                     />
                   </div>
-                  
-                  {/* Content */}
                   <div className="p-5 flex flex-col flex-1">
-                    <h4 className="text-xl font-bold text-white mb-1">{award.title}</h4>
-                    <div className="flex items-center gap-2 text-sm mb-3 w-full">
-                      <span className="text-green-400 font-medium truncate">{award.issuer}</span>
-                      <span className="text-zinc-500 flex-shrink-0">•</span>
-                      <span className="text-zinc-400 flex-shrink-0">{award.year}</span>
+                    <h4 className="text-lg sm:text-xl font-bold text-white mb-1">{award.title}</h4>
+                    <div className="flex flex-wrap items-center gap-1 text-xs sm:text-sm mb-3">
+                      <span className="text-green-400 truncate">{award.issuer}</span>
+                      <span className="text-zinc-500">•</span>
+                      <span className="text-zinc-400">{award.year}</span>
                     </div>
-
-                    {/* Description with toggle */}
                     <div className="mb-3">
                       <p className={`text-zinc-400 text-sm leading-relaxed ${isExpanded ? '' : 'line-clamp-3'}`}>
                         {award.fullDescription}
@@ -303,11 +285,8 @@ export default function About() {
                         <button
                           onClick={() => {
                             const newSet = new Set(expandedAwardDesc)
-                            if (isExpanded) {
-                              newSet.delete(award.id)
-                            } else {
-                              newSet.add(award.id)
-                            }
+                            if (isExpanded) newSet.delete(award.id)
+                            else newSet.add(award.id)
                             setExpandedAwardDesc(newSet)
                           }}
                           className="text-green-400 text-xs mt-1 hover:underline"
@@ -322,12 +301,11 @@ export default function About() {
             })}
           </div>
 
-          {/* View All Awards Button */}
           {awards.length > 3 && (
             <div className="text-center mb-8">
               <button
                 onClick={() => setShowAllAwards(!showAllAwards)}
-                className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors"
+                className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors text-sm sm:text-base"
               >
                 {showAllAwards ? (
                   <>Show Less <ChevronUp className="w-4 h-4" /></>
@@ -338,9 +316,8 @@ export default function About() {
             </div>
           )}
 
-          {/* All Awards Grid (when expanded) */}
           {showAllAwards && (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 animate-fadeIn">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
               {awards.map((award) => (
                 <div
                   key={award.id}
@@ -371,20 +348,20 @@ export default function About() {
         <div 
           ref={(el) => { sectionRefs.current[3] = el }}
           data-section-index="3"
-          className={`bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-[3rem] p-12 text-center transition-all duration-1000 ease-out transform ${
+          className={`bg-gradient-to-br from-green-900/20 to-zinc-900 border border-green-500/20 rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-8 md:p-12 text-center transition-all duration-1000 ease-out transform ${
             visibleSections.has(3) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
-          <h3 className="text-3xl font-bold mb-6">Ready to Start?</h3>
-          <p className="max-w-2xl mx-auto text-zinc-400 mb-8 text-lg">
+          <h3 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Ready to Start?</h3>
+          <p className="max-w-2xl mx-auto text-zinc-400 mb-6 sm:mb-8 text-base sm:text-lg">
             Whether you're interested in agarwood farming, our skincare products, or becoming a partner — we're here to help.
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
             <button 
               onClick={() => {
                 document.getElementById('seminars')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-4 px-8 rounded-full transition-all duration-300 transform hover:scale-105"
+              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2 px-6 sm:py-4 sm:px-8 rounded-full transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
             >
               Join a Seminar
             </button>
@@ -392,23 +369,21 @@ export default function About() {
               href="https://web.facebook.com/profile.php?id=61573163535908"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full transition-all duration-300 transform hover:scale-105"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 sm:py-4 sm:px-8 rounded-full transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
             >
               Message us on Facebook
             </a>
           </div>
-          <p className="text-zinc-500 text-sm mt-12">
+          <p className="text-zinc-500 text-xs sm:text-sm mt-8 sm:mt-12">
             📍 City Suites Unit 09, F. Ramos St., Cebu City
           </p>
         </div>
 
-        {/* FAQ Note */}
-        <div className="mt-12 text-center text-sm text-zinc-600">
+        <div className="mt-8 sm:mt-12 text-center text-xs sm:text-sm text-zinc-600">
           <p>CLP Direct Selling or CLP Green Venture? Same company! We're just growing into agarwood while keeping our original products.</p>
         </div>
       </div>
 
-      {/* Add CSS animation */}
       <style jsx>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }

@@ -136,48 +136,48 @@ export default function Products() {
   }
 
   return (
-    <section id="products" className="relative z-10 bg-[#060b05] px-6 py-20 shadow-[0_-20px_50px_rgba(0,0,0,0.4)] min-h-screen text-white">
+    <section id="products" className="relative z-10 bg-[#060b05] px-4 sm:px-6 py-12 sm:py-20 shadow-[0_-20px_50px_rgba(0,0,0,0.4)] min-h-screen text-white">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div ref={(el) => { sectionRefs.current[0] = el }} data-section-index="0" className={`text-center mb-16 transition-all duration-1000 ease-out transform ${visibleSections.has(0) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <span className="text-green-500 font-mono tracking-widest uppercase text-sm block mb-4">Premium Products</span>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-6">Discover <span className="text-green-600">Agarwood</span> Wealth</h1>
-          <p className="text-zinc-400 text-lg max-w-3xl mx-auto mb-8 leading-relaxed">Learn everything about the world's most valuable wood and how you can profit from sustainable cultivation</p>
+        <div ref={(el) => { sectionRefs.current[0] = el }} data-section-index="0" className={`text-center mb-12 sm:mb-16 transition-all duration-1000 ease-out transform ${visibleSections.has(0) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <span className="text-green-500 font-mono tracking-widest uppercase text-xs sm:text-sm block mb-3 sm:mb-4">Premium Products</span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-6">Discover <span className="text-green-600">Agarwood</span> Wealth</h1>
+          <p className="text-zinc-400 text-base sm:text-lg max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4">Learn everything about the world's most valuable wood and how you can profit from sustainable cultivation</p>
         </div>
 
-        {/* Agarwood Carousel */}
-        <div ref={(el) => { sectionRefs.current[1] = el }} data-section-index="1" className={`mb-24 transition-all duration-1000 ease-out transform ${visibleSections.has(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        {/* Agarwood Carousel - responsive height */}
+        <div ref={(el) => { sectionRefs.current[1] = el }} data-section-index="1" className={`mb-16 sm:mb-24 transition-all duration-1000 ease-out transform ${visibleSections.has(1) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <div className="relative">
-            <div className="mb-8">
+            <div className="mb-6 sm:mb-8">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-green-400 text-sm font-medium">Slide {currentSlide + 1} of {agarwoodSlides.length}</span>
-                <span className="text-zinc-500 text-sm">Interactive Guide</span>
+                <span className="text-green-400 text-xs sm:text-sm font-medium">Slide {currentSlide + 1} of {agarwoodSlides.length}</span>
+                <span className="text-zinc-500 text-xs sm:text-sm">Interactive Guide</span>
               </div>
-              <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-1.5 sm:h-2 bg-zinc-800 rounded-full overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-green-600 to-emerald-500 transition-all duration-500" style={{ width: `${((currentSlide + 1) / agarwoodSlides.length) * 100}%` }} />
               </div>
             </div>
-            <div className="relative overflow-hidden rounded-3xl">
-              <div className="relative h-[500px]">
+            <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl">
+              <div className="relative h-[400px] sm:h-[500px]">
                 {agarwoodSlides.map((slide, index) => (
                   <div key={slide.id} className={`absolute inset-0 transition-all duration-700 ease-in-out ${index === currentSlide ? 'opacity-100 translate-x-0' : index < currentSlide ? 'opacity-0 -translate-x-full' : 'opacity-0 translate-x-full'}`}>
-                    <div className={`h-full bg-gradient-to-br ${slide.color} p-8 md:p-12 rounded-3xl transition-all duration-500 hover:shadow-xl`}>
-                      <div className="flex flex-col lg:flex-row items-center h-full gap-8">
+                    <div className={`h-full bg-gradient-to-br ${slide.color} p-5 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl transition-all duration-500 hover:shadow-xl`}>
+                      <div className="flex flex-col lg:flex-row items-center h-full gap-4 sm:gap-8">
                         <div className="flex-shrink-0">
-                          <div className="w-24 h-24 md:w-32 md:h-32 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center transition-all duration-500 hover:bg-white/20 hover:scale-110">
+                          <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center transition-all duration-500 hover:bg-white/20 hover:scale-110">
                             <div className="text-white transition-transform duration-500 hover:scale-110">{slide.icon}</div>
                           </div>
                         </div>
-                        <div className="flex-grow">
-                          <div className="mb-4">
-                            <span className="text-white/80 text-sm font-medium">{slide.subtitle}</span>
-                            <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-4">{slide.title}</h2>
+                        <div className="flex-grow text-center lg:text-left">
+                          <div className="mb-3 sm:mb-4">
+                            <span className="text-white/80 text-xs sm:text-sm font-medium">{slide.subtitle}</span>
+                            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mt-1 sm:mt-2 mb-2 sm:mb-4">{slide.title}</h2>
                           </div>
-                          <p className="text-white/90 text-lg mb-6 leading-relaxed">{slide.content}</p>
-                          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center"><Clock className="w-4 h-4 text-white" /></div>
-                              <div><p className="text-white font-bold text-lg">{slide.highlight}</p></div>
+                          <p className="text-white/90 text-sm sm:text-base lg:text-lg mb-4 sm:mb-6 leading-relaxed">{slide.content}</p>
+                          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 sm:p-4">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center"><Clock className="w-3 h-3 sm:w-4 sm:h-4 text-white" /></div>
+                              <div><p className="text-white font-bold text-sm sm:text-base lg:text-lg">{slide.highlight}</p></div>
                             </div>
                           </div>
                         </div>
@@ -187,47 +187,47 @@ export default function Products() {
                 ))}
               </div>
             </div>
-            <div className="flex items-center justify-center mt-8 gap-6">
-              <button onClick={prevSlide} className="p-3 rounded-full bg-green-900/30 border border-green-800/30 hover:bg-green-800/40 transition-all hover:scale-110 active:scale-95"><ChevronLeft className="w-5 h-5 text-green-400" /></button>
-              <div className="flex gap-2">
+            <div className="flex items-center justify-center mt-6 sm:mt-8 gap-4 sm:gap-6">
+              <button onClick={prevSlide} className="p-2 sm:p-3 rounded-full bg-green-900/30 border border-green-800/30 hover:bg-green-800/40 transition-all hover:scale-110 active:scale-95"><ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" /></button>
+              <div className="flex gap-1.5 sm:gap-2">
                 {agarwoodSlides.map((_, index) => (
-                  <button key={index} onClick={() => goToSlide(index)} className={`w-3 h-3 rounded-full transition-all hover:scale-125 ${index === currentSlide ? 'bg-green-500 w-8' : 'bg-zinc-700 hover:bg-zinc-600'}`} />
+                  <button key={index} onClick={() => goToSlide(index)} className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all hover:scale-125 ${index === currentSlide ? 'bg-green-500 w-4 sm:w-8' : 'bg-zinc-700 hover:bg-zinc-600'}`} />
                 ))}
               </div>
-              <button onClick={nextSlide} className="p-3 rounded-full bg-green-900/30 border border-green-800/30 hover:bg-green-800/40 transition-all hover:scale-110 active:scale-95"><ChevronRight className="w-5 h-5 text-green-400" /></button>
+              <button onClick={nextSlide} className="p-2 sm:p-3 rounded-full bg-green-900/30 border border-green-800/30 hover:bg-green-800/40 transition-all hover:scale-110 active:scale-95"><ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" /></button>
             </div>
-            <div className="text-center mt-6"><p className="text-zinc-500 text-sm">Each tree can produce 1-3kg of resin worth ₱50,000-₱500,000</p></div>
+            <div className="text-center mt-4 sm:mt-6"><p className="text-zinc-500 text-xs sm:text-sm">Each tree can produce 1-3kg of resin worth ₱50,000-₱500,000</p></div>
           </div>
         </div>
 
         {/* Other Products */}
         <div ref={(el) => { sectionRefs.current[2] = el }} data-section-index="2" className={`mb-8 transition-all duration-1000 ease-out transform ${visibleSections.has(2) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold mb-3">Other Available Products</h3>
-            <p className="text-zinc-500 text-lg max-w-2xl mx-auto">From our direct selling family – trusted brands you'll love</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h3 className="text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">Other Available Products</h3>
+            <p className="text-zinc-500 text-base sm:text-lg max-w-2xl mx-auto px-4">From our direct selling family – trusted brands you'll love</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {otherProducts.map((product) => {
               const isExpanded = expandedDesc.has(product.id)
               const displayedFeatures = product.features.slice(0, 3)
               const hasMoreFeatures = product.features.length > 3
               return (
                 <div key={product.id} className="bg-zinc-900/30 border border-green-800/20 rounded-2xl overflow-hidden hover:border-green-600/30 transition-all duration-500 hover:-translate-y-1 group flex flex-col">
-                  <div className="relative w-full h-80 overflow-hidden">
+                  <div className="relative w-full h-64 sm:h-80 overflow-hidden">
                     <Image src={product.image || (product.images && product.images[0]) || ""} alt={product.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
                   </div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <h4 className="text-xl font-bold text-white mb-2 transition-colors duration-300 group-hover:text-green-400">{product.name}</h4>
+                  <div className="p-4 sm:p-5 flex flex-col flex-1">
+                    <h4 className="text-lg sm:text-xl font-bold text-white mb-2 transition-colors duration-300 group-hover:text-green-400">{product.name}</h4>
                     <div className="mb-3">
-                      <p className={`text-zinc-400 text-sm leading-relaxed ${isExpanded ? '' : 'line-clamp-2'}`}>
+                      <p className={`text-zinc-400 text-xs sm:text-sm leading-relaxed ${isExpanded ? '' : 'line-clamp-2'}`}>
                         {isExpanded ? product.longDescription : product.description}
                       </p>
                       {(product.longDescription || product.description.length > 100) && (
                         <button onClick={() => toggleDescription(product.id)} className="text-green-400 text-xs mt-1 hover:underline">{isExpanded ? 'Show less' : 'Read more'}</button>
                       )}
                     </div>
-                    <div className="space-y-2 mb-4">
+                    <div className="space-y-1.5 sm:space-y-2 mb-4">
                       {displayedFeatures.map((feature: string, idx: number) => (
                         <div key={idx} className="flex items-start gap-2">
                           <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-1.5" />
@@ -236,9 +236,9 @@ export default function Products() {
                       ))}
                       {hasMoreFeatures && <div className="text-xs text-green-400">+{product.features.length - 3} more</div>}
                     </div>
-                    <div className="mt-auto border-t border-green-800/30 pt-4">
-                      <p className="text-green-400 font-bold text-lg mb-3">{product.price}</p>
-                      <button onClick={() => openProductModal(product)} className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2.5 rounded-lg transition-all duration-300 hover:scale-[1.02]">Inquire Now</button>
+                    <div className="mt-auto border-t border-green-800/30 pt-3 sm:pt-4">
+                      <p className="text-green-400 font-bold text-base sm:text-lg mb-2 sm:mb-3">{product.price}</p>
+                      <button onClick={() => openProductModal(product)} className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2 sm:py-2.5 rounded-lg transition-all duration-300 text-sm sm:text-base">Inquire Now</button>
                     </div>
                   </div>
                 </div>
@@ -248,19 +248,20 @@ export default function Products() {
         </div>
       </div>
 
-      {/* Modal with image carousel */}
+      {/* Modal - fully responsive */}
       {showProductModal && selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={closeProductModal} />
-          <div className="relative bg-[#0f130e] border border-green-800/40 rounded-2xl shadow-2xl w-full max-w-6xl mx-auto overflow-hidden">
+          <div className="relative bg-[#0f130e] border border-green-800/40 rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-4xl sm:max-w-6xl mx-auto overflow-hidden">
             <button
               onClick={closeProductModal}
-              className="absolute top-4 right-4 z-10 p-1.5 hover:bg-zinc-800/60 rounded-full transition-colors"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-1 hover:bg-zinc-800/60 rounded-full transition-colors"
             >
-              <X className="w-5 h-5 text-zinc-400 hover:text-white" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 hover:text-white" />
             </button>
 
-            <div className="grid grid-cols-1 md:grid-cols-[1fr,1.5fr] gap-0">
+            {/* Mobile: column, Desktop: row */}
+            <div className="flex flex-col md:grid md:grid-cols-[1fr,1.5fr] gap-0">
               {/* Left: Image carousel */}
               <div className="relative bg-zinc-800/50 min-h-[200px]">
                 {(() => {
@@ -268,7 +269,7 @@ export default function Products() {
                   if (!images.length) return null
                   return (
                     <>
-                      <div className="relative w-full h-full" style={{ minHeight: '300px' }}>
+                      <div className="relative w-full h-[250px] sm:h-[300px] md:h-full" style={{ minHeight: '250px' }}>
                         <Image
                           src={images[currentImageIndex]}
                           alt={selectedProduct.name}
@@ -282,13 +283,13 @@ export default function Products() {
                             onClick={prevImage}
                             className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 transition-all"
                           >
-                            <ChevronLeft className="w-5 h-5" />
+                            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                           </button>
                           <button
                             onClick={nextImage}
                             className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 transition-all"
                           >
-                            <ChevronRight className="w-5 h-5" />
+                            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                           </button>
                           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 bg-black/50 px-2 py-1 rounded-full">
                             {images.map((_: any, idx: number) => (
@@ -296,7 +297,7 @@ export default function Products() {
                                 key={idx}
                                 onClick={() => setCurrentImageIndex(idx)}
                                 className={`w-1.5 h-1.5 rounded-full transition-all ${
-                                  idx === currentImageIndex ? 'bg-green-500 w-3' : 'bg-white/50'
+                                  idx === currentImageIndex ? 'bg-green-500 w-2.5 sm:w-3' : 'bg-white/50'
                                 }`}
                               />
                             ))}
@@ -309,20 +310,20 @@ export default function Products() {
               </div>
 
               {/* Right: Content */}
-              <div className="p-6 md:p-7 flex flex-col space-y-4">
+              <div className="p-4 sm:p-5 md:p-6 lg:p-7 flex flex-col space-y-3 sm:space-y-4">
                 <div>
-                  <h2 className="text-xl md:text-2xl font-bold text-white mb-2">{selectedProduct.name}</h2>
-                  <p className="text-gray-300 text-sm leading-relaxed">{selectedProduct.longDescription || selectedProduct.description}</p>
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 sm:mb-2">{selectedProduct.name}</h2>
+                  <p className="text-gray-300 text-xs sm:text-sm leading-relaxed">{selectedProduct.longDescription || selectedProduct.description}</p>
                 </div>
 
                 {/* Price and tiers */}
                 <div>
-                  <p className="text-green-400 font-bold text-xl md:text-2xl">{selectedProduct.price}</p>
+                  <p className="text-green-400 font-bold text-lg sm:text-xl md:text-2xl">{selectedProduct.price}</p>
                   {selectedProduct.priceTiers && (
-                    <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-sm text-gray-300 bg-zinc-800/40 p-3 rounded-lg">
+                    <div className="mt-2 sm:mt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-2 sm:gap-x-3 gap-y-1 text-xs sm:text-sm text-gray-300 bg-zinc-800/40 p-2 sm:p-3 rounded-lg">
                       {selectedProduct.priceTiers.map((tier: string, idx: number) => (
                         <div key={idx} className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                          <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-green-500 rounded-full" />
                           {tier}
                         </div>
                       ))}
@@ -332,12 +333,12 @@ export default function Products() {
 
                 {/* Key Features */}
                 <div>
-                  <h4 className="text-xs font-semibold text-green-400 uppercase tracking-wider mb-2">Key Features</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-300">
+                  <h4 className="text-[10px] sm:text-xs font-semibold text-green-400 uppercase tracking-wider mb-1 sm:mb-2">Key Features</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2 text-xs sm:text-sm text-gray-300">
                     {selectedProduct.features.map((feature: string, idx: number) => (
                       <div key={idx} className="flex items-start gap-1.5">
-                        <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-xs md:text-sm">{feature}</span>
+                        <CheckCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-500 flex-shrink-0 mt-0.5" />
+                        <span className="text-[11px] sm:text-xs md:text-sm">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -349,9 +350,9 @@ export default function Products() {
                     href="https://web.facebook.com/profile.php?id=61573163535908"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 text-sm"
+                    className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg transition-all duration-300 text-xs sm:text-sm"
                   >
-                    <Facebook className="w-4 h-4" />
+                    <Facebook className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     Message us on Facebook to Order
                   </a>
                 </div>
