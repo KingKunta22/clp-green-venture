@@ -77,7 +77,7 @@ export default function About() {
       fullDescription: "Individual Awards 2025, Most Outstanding Young Entrepreneur of the Year awarded to Charlie Patigue for exceptional leadership and business innovation.",
       shortDescription: "Charlie Patigue recognized as Most Outstanding Young Entrepreneur.",
       icon: <Shield className="w-8 h-8" />,
-      image: "/images/awards/award4.jpg"
+      image: "/images/awards/award4.png"
     },
     {
       id: 5,
@@ -87,7 +87,7 @@ export default function About() {
       fullDescription: "Global Management Excellence Awards 2025, Most Trusted Korean Skin Care Products Provider Awarded to CLP Direct Selling (MSECRET PRODUCT) for excellence in skincare distribution.",
       shortDescription: "Second consecutive win for MSECRET as Most Trusted Korean Skincare Provider.",
       icon: <Award className="w-8 h-8" />,
-      image: "/images/awards/award5.jpg"
+      image: "/images/awards/award5.png"
     }
   ]
 
