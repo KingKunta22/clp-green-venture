@@ -4,15 +4,33 @@ import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Leaf, DollarSign, Calendar, TrendingUp, Shield, Package, Users, CheckCircle, Zap, Clock, X, Facebook } from 'lucide-react'
 
+// Import Swiper and its styles (only for mobile carousel)
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Pagination, Navigation } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/pagination'
+import 'swiper/css/navigation'
+
 export default function Products() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set())
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
+  const [isMobile, setIsMobile] = useState(false)
   
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [showProductModal, setShowProductModal] = useState(false)
   const [expandedDesc, setExpandedDesc] = useState<Set<number>>(new Set())
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
@@ -135,6 +153,45 @@ export default function Products() {
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
   }
 
+  // Helper to render a product card (used in both grid and carousel)
+  const renderProductCard = (product: any) => {
+    const isExpanded = expandedDesc.has(product.id)
+    const displayedFeatures = product.features.slice(0, 3)
+    const hasMoreFeatures = product.features.length > 3
+
+    return (
+      <div className="bg-zinc-900/30 border border-green-800/20 rounded-2xl overflow-hidden hover:border-green-600/30 transition-all duration-500 hover:-translate-y-1 group flex flex-col h-full">
+        <div className="relative w-full h-64 sm:h-80 overflow-hidden">
+          <Image src={product.image || (product.images && product.images[0]) || ""} alt={product.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
+        </div>
+        <div className="p-4 sm:p-5 flex flex-col flex-1">
+          <h4 className="text-lg sm:text-xl font-bold text-white mb-2 transition-colors duration-300 group-hover:text-green-400">{product.name}</h4>
+          <div className="mb-3">
+            <p className={`text-zinc-400 text-xs sm:text-sm leading-relaxed ${isExpanded ? '' : 'line-clamp-2'}`}>
+              {isExpanded ? product.longDescription : product.description}
+            </p>
+            {(product.longDescription || product.description.length > 100) && (
+              <button onClick={() => toggleDescription(product.id)} className="text-green-400 text-xs mt-1 hover:underline">{isExpanded ? 'Show less' : 'Read more'}</button>
+            )}
+          </div>
+          <div className="space-y-1.5 sm:space-y-2 mb-4">
+            {displayedFeatures.map((feature: string, idx: number) => (
+              <div key={idx} className="flex items-start gap-2">
+                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-1.5" />
+                <span className="text-white text-xs">{feature}</span>
+              </div>
+            ))}
+            {hasMoreFeatures && <div className="text-xs text-green-400">+{product.features.length - 3} more</div>}
+          </div>
+          <div className="mt-auto border-t border-green-800/30 pt-3 sm:pt-4">
+            <p className="text-green-400 font-bold text-base sm:text-lg mb-2 sm:mb-3">{product.price}</p>
+            <button onClick={() => openProductModal(product)} className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2 sm:py-2.5 rounded-lg transition-all duration-300 text-sm sm:text-base">Inquire Now</button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <section id="products" className="relative z-10 bg-[#060b05] px-4 sm:px-6 py-12 sm:py-20 shadow-[0_-20px_50px_rgba(0,0,0,0.4)] min-h-screen text-white">
       <div className="max-w-6xl mx-auto">
@@ -200,166 +257,154 @@ export default function Products() {
           </div>
         </div>
 
-        {/* Other Products */}
+        {/* Other Products - responsive grid/carousel */}
         <div ref={(el) => { sectionRefs.current[2] = el }} data-section-index="2" className={`mb-8 transition-all duration-1000 ease-out transform ${visibleSections.has(2) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <div className="text-center mb-8 sm:mb-12">
             <h3 className="text-2xl sm:text-3xl font-bold mb-2 sm:mb-3">Other Available Products</h3>
             <p className="text-zinc-500 text-base sm:text-lg max-w-2xl mx-auto px-4">From our direct selling family – trusted brands you'll love</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {otherProducts.map((product) => {
-              const isExpanded = expandedDesc.has(product.id)
-              const displayedFeatures = product.features.slice(0, 3)
-              const hasMoreFeatures = product.features.length > 3
-              return (
-                <div key={product.id} className="bg-zinc-900/30 border border-green-800/20 rounded-2xl overflow-hidden hover:border-green-600/30 transition-all duration-500 hover:-translate-y-1 group flex flex-col">
-                  <div className="relative w-full h-64 sm:h-80 overflow-hidden">
-                    <Image src={product.image || (product.images && product.images[0]) || ""} alt={product.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
-                  </div>
-                  <div className="p-4 sm:p-5 flex flex-col flex-1">
-                    <h4 className="text-lg sm:text-xl font-bold text-white mb-2 transition-colors duration-300 group-hover:text-green-400">{product.name}</h4>
-                    <div className="mb-3">
-                      <p className={`text-zinc-400 text-xs sm:text-sm leading-relaxed ${isExpanded ? '' : 'line-clamp-2'}`}>
-                        {isExpanded ? product.longDescription : product.description}
-                      </p>
-                      {(product.longDescription || product.description.length > 100) && (
-                        <button onClick={() => toggleDescription(product.id)} className="text-green-400 text-xs mt-1 hover:underline">{isExpanded ? 'Show less' : 'Read more'}</button>
+          {isMobile ? (
+            // Mobile: carousel
+            <div className="relative w-full pb-12">
+              <Swiper
+                modules={[Pagination, Navigation]}
+                pagination={{ clickable: true, dynamicBullets: true }}
+                navigation
+                spaceBetween={16}
+                slidesPerView={1}
+                centeredSlides
+                loop={otherProducts.length > 1}
+                className="w-full"
+              >
+                {otherProducts.map((product) => (
+                  <SwiperSlide key={product.id}>
+                    {renderProductCard(product)}
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+          ) : (
+            // Desktop: grid
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {otherProducts.map((product) => renderProductCard(product))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Modal (unchanged) */}
+      {showProductModal && selectedProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={closeProductModal} />
+          <div className="relative bg-[#0f130e] border border-green-800/40 rounded-lg sm:rounded-2xl shadow-2xl w-full max-w-[95%] sm:max-w-4xl md:max-w-6xl mx-auto overflow-hidden max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={closeProductModal}
+              className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 p-1 hover:bg-zinc-800/60 rounded-full transition-colors"
+            >
+              <X className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 hover:text-white" />
+            </button>
+
+            <div className="flex flex-col md:grid md:grid-cols-[1fr,1.5fr] gap-0">
+              {/* Left: Image carousel */}
+              <div className="relative bg-zinc-800/50">
+                {(() => {
+                  const images = selectedProduct.images || (selectedProduct.image ? [selectedProduct.image] : [])
+                  if (!images.length) return null
+                  return (
+                    <>
+                      <div className="relative w-full h-48 sm:h-64 md:h-full" style={{ minHeight: '180px' }}>
+                        <Image
+                          src={images[currentImageIndex]}
+                          alt={selectedProduct.name}
+                          fill
+                          className="object-cover object-top"
+                        />
+                      </div>
+                      {images.length > 1 && (
+                        <>
+                          <button
+                            onClick={prevImage}
+                            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 transition-all"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={nextImage}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 transition-all"
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 bg-black/50 px-2 py-1 rounded-full">
+                            {images.map((_: any, idx: number) => (
+                              <button
+                                key={idx}
+                                onClick={() => setCurrentImageIndex(idx)}
+                                className={`w-1.5 h-1.5 rounded-full transition-all ${
+                                  idx === currentImageIndex ? 'bg-green-500 w-2.5' : 'bg-white/50'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </>
                       )}
-                    </div>
-                    <div className="space-y-1.5 sm:space-y-2 mb-4">
-                      {displayedFeatures.map((feature: string, idx: number) => (
-                        <div key={idx} className="flex items-start gap-2">
-                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-1.5" />
-                          <span className="text-white text-xs">{feature}</span>
+                    </>
+                  )
+                })()}
+              </div>
+
+              {/* Right: Content – compact spacing */}
+              <div className="p-3 sm:p-5 md:p-6 flex flex-col space-y-2 sm:space-y-4">
+                <div>
+                  <h2 className="text-base sm:text-lg md:text-2xl font-bold text-white mb-1">{selectedProduct.name}</h2>
+                  <p className="text-gray-300 text-xs sm:text-sm leading-relaxed">{selectedProduct.longDescription || selectedProduct.description}</p>
+                </div>
+
+                {/* Price and tiers */}
+                <div>
+                  <p className="text-green-400 font-bold text-sm sm:text-lg md:text-2xl">{selectedProduct.price}</p>
+                  {selectedProduct.priceTiers && (
+                    <div className="mt-1 sm:mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-1 text-[10px] sm:text-xs text-gray-300 bg-zinc-800/40 p-1.5 sm:p-2 rounded-lg">
+                      {selectedProduct.priceTiers.map((tier: string, idx: number) => (
+                        <div key={idx} className="flex items-center gap-1">
+                          <span className="w-1 h-1 bg-green-500 rounded-full" />
+                          {tier}
                         </div>
                       ))}
-                      {hasMoreFeatures && <div className="text-xs text-green-400">+{product.features.length - 3} more</div>}
                     </div>
-                    <div className="mt-auto border-t border-green-800/30 pt-3 sm:pt-4">
-                      <p className="text-green-400 font-bold text-base sm:text-lg mb-2 sm:mb-3">{product.price}</p>
-                      <button onClick={() => openProductModal(product)} className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2 sm:py-2.5 rounded-lg transition-all duration-300 text-sm sm:text-base">Inquire Now</button>
-                    </div>
+                  )}
+                </div>
+
+                {/* Key Features */}
+                <div>
+                  <h4 className="text-[9px] sm:text-xs font-semibold text-green-400 uppercase tracking-wider mb-1">Key Features</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[10px] sm:text-xs text-gray-300">
+                    {selectedProduct.features.map((feature: string, idx: number) => (
+                      <div key={idx} className="flex items-start gap-1">
+                        <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-green-500 flex-shrink-0 mt-0.5" />
+                        <span className="text-[9px] sm:text-xs leading-tight">{feature}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
 
-{/* Modal - fully responsive, compact on mobile */}
-{showProductModal && selectedProduct && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
-    <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={closeProductModal} />
-    <div className="relative bg-[#0f130e] border border-green-800/40 rounded-lg sm:rounded-2xl shadow-2xl w-full max-w-[95%] sm:max-w-4xl md:max-w-6xl mx-auto overflow-hidden max-h-[90vh] overflow-y-auto">
-      <button
-        onClick={closeProductModal}
-        className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 p-1 hover:bg-zinc-800/60 rounded-full transition-colors"
-      >
-        <X className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 hover:text-white" />
-      </button>
-
-      <div className="flex flex-col md:grid md:grid-cols-[1fr,1.5fr] gap-0">
-        {/* Left: Image carousel */}
-        <div className="relative bg-zinc-800/50">
-          {(() => {
-            const images = selectedProduct.images || (selectedProduct.image ? [selectedProduct.image] : [])
-            if (!images.length) return null
-            return (
-              <>
-                <div className="relative w-full h-48 sm:h-64 md:h-full" style={{ minHeight: '180px' }}>
-                  <Image
-                    src={images[currentImageIndex]}
-                    alt={selectedProduct.name}
-                    fill
-                    className="object-cover object-top"
-                  />
+                {/* Facebook Button */}
+                <div className="pt-1 sm:pt-2">
+                  <a
+                    href="https://web.facebook.com/profile.php?id=61573163535908"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 sm:py-2.5 px-2 sm:px-4 rounded-lg transition-all duration-300 text-[10px] sm:text-sm"
+                  >
+                    <Facebook className="w-3 h-3 sm:w-4 sm:h-4" />
+                    Message us on Facebook to Order
+                  </a>
                 </div>
-                {images.length > 1 && (
-                  <>
-                    <button
-                      onClick={prevImage}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 transition-all"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={nextImage}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 transition-all"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 bg-black/50 px-2 py-1 rounded-full">
-                      {images.map((_: any, idx: number) => (
-                        <button
-                          key={idx}
-                          onClick={() => setCurrentImageIndex(idx)}
-                          className={`w-1.5 h-1.5 rounded-full transition-all ${
-                            idx === currentImageIndex ? 'bg-green-500 w-2.5' : 'bg-white/50'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </>
-            )
-          })()}
-        </div>
-
-        {/* Right: Content – compact spacing */}
-        <div className="p-3 sm:p-5 md:p-6 flex flex-col space-y-2 sm:space-y-4">
-          <div>
-            <h2 className="text-base sm:text-lg md:text-2xl font-bold text-white mb-1">{selectedProduct.name}</h2>
-            <p className="text-gray-300 text-xs sm:text-sm leading-relaxed">{selectedProduct.longDescription || selectedProduct.description}</p>
-          </div>
-
-          {/* Price and tiers */}
-          <div>
-            <p className="text-green-400 font-bold text-sm sm:text-lg md:text-2xl">{selectedProduct.price}</p>
-            {selectedProduct.priceTiers && (
-              <div className="mt-1 sm:mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-1 text-[10px] sm:text-xs text-gray-300 bg-zinc-800/40 p-1.5 sm:p-2 rounded-lg">
-                {selectedProduct.priceTiers.map((tier: string, idx: number) => (
-                  <div key={idx} className="flex items-center gap-1">
-                    <span className="w-1 h-1 bg-green-500 rounded-full" />
-                    {tier}
-                  </div>
-                ))}
               </div>
-            )}
-          </div>
-
-          {/* Key Features */}
-          <div>
-            <h4 className="text-[9px] sm:text-xs font-semibold text-green-400 uppercase tracking-wider mb-1">Key Features</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[10px] sm:text-xs text-gray-300">
-              {selectedProduct.features.map((feature: string, idx: number) => (
-                <div key={idx} className="flex items-start gap-1">
-                  <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-[9px] sm:text-xs leading-tight">{feature}</span>
-                </div>
-              ))}
             </div>
           </div>
-
-          {/* Facebook Button */}
-          <div className="pt-1 sm:pt-2">
-            <a
-              href="https://web.facebook.com/profile.php?id=61573163535908"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 sm:py-2.5 px-2 sm:px-4 rounded-lg transition-all duration-300 text-[10px] sm:text-sm"
-            >
-              <Facebook className="w-3 h-3 sm:w-4 sm:h-4" />
-              Message us on Facebook to Order
-            </a>
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
-)}
+      )}
 
       <style jsx>{`
         @keyframes fadeIn {
